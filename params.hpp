@@ -7,5 +7,13 @@ void read_params();
 std::string get_param(std::string param_name);
 double param_p();
 double param_q();
+int param_N();
+int param_T();
+double param_w_intra_mean();
+double param_w_intra_std();
+double param_w_inter_mean();
+double param_w_inter_std();
+double param_auto_activ_mean();
+double param_auto_activ_std();
 
 #endif

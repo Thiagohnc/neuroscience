@@ -8,13 +8,13 @@
 
 using namespace std;
 
-const int N = 300;
-const int T = 1000;
-
-bool spike[N][T];
-double fire_rate[N][T];
-
 int main(void) { 
+    const int N = param_N();
+    const int T = param_T();
+
+    bool spike[N][T];
+    double fire_rate[N][T];
+
     /* Graph Creation */
     
     Graph g;

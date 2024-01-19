@@ -1,5 +1,6 @@
 #include "graph_generator.hpp"
 #include "utils.hpp"
+#include "params.hpp"
 #include <cassert>
 #include <cmath>
 #include <random>
@@ -7,13 +8,13 @@
 
 #include <iostream>
 
-const double auto_activ_rate = -log(99);
-
-std::default_random_engine generator;
-std::normal_distribution<double> intra(0.15, 0.3), inter(0.05, 0.1), auto_activ(auto_activ_rate, 2);
-
 Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector<std::vector<double> > &p) {
-    int n = 0;
+    std::default_random_engine generator;
+    std::normal_distribution<double> intra(param_w_intra_mean(), param_w_intra_std());
+    std::normal_distribution<double> inter(param_w_inter_mean(), param_w_inter_std());
+    std::normal_distribution<double> auto_activ(param_auto_activ_mean(), param_auto_activ_std());
+    
+    int N = 0;
     
     assert(groups.size() == p.size());
     for(int g = 0; g < (int)p.size(); g++)
@@ -21,9 +22,9 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
     
     
     for(int g = 0; g < (int)groups.size(); g++)
-        n += groups[g].size();
+        N += groups[g].size();
     
-    Graph g = Graph(n);
+    Graph g = Graph(N);
     for(int g_orig = 0; g_orig < (int)groups.size(); g_orig++) {
         for(int g_dest = 0; g_dest < (int)groups.size(); g_dest++) {
             double prob = p[g_orig][g_dest];
@@ -45,7 +46,7 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
     }
 
     //std::cout << "d" << std::endl;
-    for(int i = 0; i < n; i++) {
+    for(int i = 0; i < N; i++) {
         g.kth_node(i).set_b(auto_activ(generator));
     }
     //std::cout << "e" << std::endl;
