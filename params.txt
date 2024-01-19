@@ -1,3 +1,10 @@
 p=0.05
 q=0.01
-teste=blablabla asdlkansdlk 123
+N=300
+T=1000
+w_intra_mean=0.15
+w_intra_std=0.3
+w_inter_mean=0.05
+w_inter_std=0.1
+auto_activ_mean=-4.59511985
+auto_activ_std=2
