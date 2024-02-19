@@ -9,10 +9,12 @@
 #include <iostream>
 
 Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector<std::vector<double> > &p) {
-    std::default_random_engine generator;
+    std::default_random_engine generator(param_seed());
     std::normal_distribution<double> intra(param_w_intra_mean(), param_w_intra_std());
     std::normal_distribution<double> inter(param_w_inter_mean(), param_w_inter_std());
-    std::normal_distribution<double> auto_activ(param_auto_activ_mean(), param_auto_activ_std());
+    double intra_exc_portion = param_intra_exchitatory_portion();
+    double inter_exc_portion = param_inter_exchitatory_portion();
+    double b = inverse_logistic(param_auto_activ());
     
     int N = 0;
     
@@ -33,21 +35,34 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
                 for(int j = 0; j < (int)groups[g_dest].size(); j++) {
                     int o = groups[g_orig][i];
                     int d = groups[g_dest][j];
+                    double weight;
                     
-                    if(o != d && coin_flip(prob)) {
-                        if(g_orig == g_dest)
-                            g.add_edge(o, d, intra(generator));
-                        else
-                            g.add_edge(o, d, inter(generator));
+                    if(o == d) continue;
+                    
+                    if(g_orig == g_dest) {
+                        weight = intra(generator);
+                        if(coin_flip(1 - intra_exc_portion))
+                            weight *= -1;
+                    }
+                    else {
+                        weight = inter(generator);
+                        if(coin_flip(1 - inter_exc_portion))
+                            weight *= -1;
+                    }
+                    
+                    if(coin_flip(prob)) {
+                        g.add_edge(o, d, weight);
                     }
                 }
             }
         }
     }
 
+    //exit(0);
+
     //std::cout << "d" << std::endl;
     for(int i = 0; i < N; i++) {
-        g.kth_node(i).set_b(auto_activ(generator));
+        g.kth_node(i).set_b(b);
     }
     //std::cout << "e" << std::endl;
     

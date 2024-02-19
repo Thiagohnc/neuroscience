@@ -9,6 +9,7 @@
 
 Node::Node(double b) {
     auto_activation_rate = b;
+    exit_weight = 0;
 }
 
 Node::Node() {}
@@ -17,8 +18,16 @@ double Node::b() {
     return auto_activation_rate;
 }
 
+double Node::W() {
+    return exit_weight;
+}
+
 void Node::set_b(double b) {
     auto_activation_rate = b;
+}
+
+void Node::add_weight(double w) {
+    exit_weight += w;
 }
 
 /* Edge class */
@@ -53,9 +62,8 @@ Graph::Graph(int n) {
 Graph::Graph() {}
 
 void Graph::add_edge(int o, int d, double w) {
-    //std::cout << "não deveria bugar: " << o << " " << neighbors.size() << std::endl;
     neighbors[o].push_back(Edge(d, w));
-    //std::cout << "não bugou :)" << std::endl;
+    kth_node(o).add_weight(w);
 }
 
 int Graph::neighbor_quantity(int v) {

@@ -8,5 +8,7 @@ int rand(int cap);
 double rand01();
 bool coin_flip(double p);
 std::pair<std::string,std::string> split(std::string str, char delim);
+double logistic(double x);
+double inverse_logistic(double y);
 
 #endif

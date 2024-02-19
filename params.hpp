@@ -13,7 +13,9 @@ double param_w_intra_mean();
 double param_w_intra_std();
 double param_w_inter_mean();
 double param_w_inter_std();
-double param_auto_activ_mean();
-double param_auto_activ_std();
+double param_auto_activ();
+double param_intra_exchitatory_portion();
+double param_inter_exchitatory_portion();
+unsigned int param_seed();
 
 #endif

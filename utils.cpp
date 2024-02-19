@@ -1,20 +1,25 @@
+#include "params.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <random>
 #include <stdexcept>
 #include <string>
 
 using namespace std;
 
-mt19937 twister{};
+mt19937 twister{param_seed()};
+std::default_random_engine generator(param_seed());
+std::uniform_real_distribution<double> rand_real(0,1);
 
 int rand(int cap) {
 	return twister() % cap;
 }
 
 double rand01() {
-    return (double) (twister() % twister.max()) / twister.max();
+    return rand_real(generator);
+    //return (double) (twister() % twister.max()) / twister.max();
 }
 
 bool coin_flip(double p) {
@@ -31,4 +36,13 @@ pair<string,string> split(string str, char delim) {
     }
     string delim_str(1, delim);
     throw invalid_argument("No character " + delim_str + " found in string " + str);
+}
+
+double logistic(double x) {
+    return exp(x) / (1 + exp(x));
+}
+
+double inverse_logistic(double y) {
+    assert(y > 0 && y < 1);
+    return log(y / (1 - y));
 }

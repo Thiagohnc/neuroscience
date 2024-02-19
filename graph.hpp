@@ -6,11 +6,14 @@
 class Node {
 private:
     double auto_activation_rate;
+    double exit_weight;
 public:
     Node(double b);
     Node();
     double b();
+    double W();
     void set_b(double b);
+    void add_weight(double b);
 };
 
 class Edge {

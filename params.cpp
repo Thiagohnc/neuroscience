@@ -5,12 +5,14 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <random>
 #include <stdexcept>
 #include <string>
 
 using namespace std;
 
 map<string,string> param_values;
+std::random_device rd;
 
 void read_params() {
     string line;
@@ -65,10 +67,22 @@ double param_w_inter_std() {
     return stod(get_param("w_inter_std"));
 }
 
-double param_auto_activ_mean() {
-    return stod(get_param("auto_activ_mean"));
+double param_auto_activ() {
+    return stod(get_param("auto_activ"));
 }
 
-double param_auto_activ_std() {
-    return stod(get_param("auto_activ_std"));
+double param_intra_exchitatory_portion() {
+    return stod(get_param("intra_exchitatory_portion"));
 }
+
+double param_inter_exchitatory_portion() {
+    return stod(get_param("inter_exchitatory_portion"));
+}
+
+unsigned int param_seed() {
+    static int seed = rd();
+    string seed_str = get_param("seed");
+    if(seed_str != "auto") seed = stoi(get_param("seed"));
+    return seed;
+}
+
