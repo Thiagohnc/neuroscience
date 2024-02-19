@@ -11,9 +11,19 @@ int main(void) {
     const int N = param_N();
     const int T = param_T();
 
-    bool spike[N][T+1];
-    double fire_rate[N][T+1];
-    double M[N][T+1];
+    bool** spike;
+    double** fire_rate;
+    double** M;
+
+    spike = (bool**) malloc(sizeof(bool*) * N);
+    fire_rate = (double**) malloc(sizeof(double*) * N);
+    M = (double**) malloc(sizeof(double*) * N);
+
+    for(int i = 0; i < N; i++) {
+        spike[i] = (bool*) malloc(sizeof(bool) * T);
+        fire_rate[i] = (double*) malloc(sizeof(double) * T);
+        M[i] = (double*) malloc(sizeof(double) * T);
+    }
 
     /* Graph Creation */
     
