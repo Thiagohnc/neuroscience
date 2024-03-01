@@ -2,6 +2,7 @@
 #include "graph.hpp"
 #include "utils.hpp"
 #include "params.hpp"
+#include <fstream>
 #include <iostream>
 #include <vector>
 
@@ -61,12 +62,13 @@ int main(void) {
         /* Calculating Fire Rate */
         for(int u = 0; u < N; u++) {
             for(int tt = max(0, t - 1); tt < t; tt++) {
-                //cout << t << " " << tt << endl;
+                //cout << t << " " << tt << '\n';
                 for(int k = 0; k < g.neighbor_quantity(u); k++) {
                     int v = g.kth_neighbor(u,k);
                     double w = g.kth_weight(u,k);
                     //fire_rate[v][t] += w * spike[u][tt];
-                    fire_rate[v][t] += (w * spike[u][tt]) / g.kth_node(u).W();
+                    fire_rate[v][t] += (w * spike[u][tt]) / N;
+                    //fire_rate[v][t] += (w * spike[u][tt]) / g.kth_node(u).W();
                     //fire_rate[v][t] += (w * spike[u][tt]) / avg_w;
                 }
             }
@@ -79,28 +81,53 @@ int main(void) {
         }
     }
     
+    /* Save current parameters in file */
+    
+    ifstream params_source("params.txt", ios::binary);
+    ofstream params_dest("out/params", ios::binary);
+    params_dest << params_source.rdbuf();
+    
+    /* Output Spike Trains & Firing Rate */
+    
+    ofstream spike_trains_file("out/spike_trains");
+    ofstream firing_rate_file("out/firing_rate");
+    
+    if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
+    if(!firing_rate_file.is_open()) {cout << "Unable to open file firing_rate" << '\n'; exit(0);}
+    
     for(int u = 0; u < N; u++) {
         for(int t = 0; t < T; t++) {
-            //cout << fire_rate[u][t] << " ";
-            cout << spike[u][t] << " ";
+            spike_trains_file << spike[u][t] << " ";
+            firing_rate_file << fire_rate[u][t] << " ";
         }
-        cout << endl;
+        spike_trains_file << '\n';
+        firing_rate_file << '\n';
     }
-        
-    /*double alpha = 0.8;
+    
+    spike_trains_file.close();
+    firing_rate_file.close();
+    
+    /* Output EWMA */
+    
+    ofstream ewma_file("out/ewma");
+    
+    if(!ewma_file.is_open()) {cout << "Unable to open file ewma" << '\n'; exit(0);}
+    
+    double alpha = param_alpha_ewma();
     for(int u = 0; u < N; u++) {
-        cout << M[u][0] << " ";
+        ewma_file << M[u][0] << " ";
         for(int t = 1; t <= T; t++) {
             M[u][t] = alpha * spike[u][t] + (1 - alpha) * M[u][t-1];
             
             M[u][t] = min(M[u][t], 1 - 1e-10);
             M[u][t] = max(M[u][t], 1e-10);
-            
-            //cout << M[u][t] << " ";
-            cout << inverse_logistic(M[u][t]) << " ";
+
+            ewma_file << inverse_logistic(M[u][t]) << " ";
         }
-        cout << endl;
-    }*/
+        ewma_file << '\n';
+    }
+    
+    ewma_file.close();
     
     /*int window = 50;
     for(int u = 0; u < N; u++) {
@@ -116,21 +143,33 @@ int main(void) {
             
             cout << inverse_logistic(val) << " ";
         }
-        cout << endl;
+        cout << '\n';
     }*/
     
     
-    /*for(int u = 0; u < N; u++) {
+    /* Output Adjacency List */
+
+    ofstream adj_file("out/adjacency_0_1");
+    ofstream adj_w_file("out/adjacency_weights");
+    
+    if(!adj_file.is_open()) {cout << "Unable to open file adjacency_0_1" << '\n'; exit(0);}
+    if(!adj_w_file.is_open()) {cout << "Unable to open file adjacency_weights" << '\n'; exit(0);}
+    
+    for(int u = 0; u < N; u++) {
         for(int v = 0; v < N; v++) {
             int tem = -1;
             for(int k = 0; k < g.neighbor_quantity(u); k++) {
                 if(g.kth_neighbor(u,k) == v) tem = k;
             }
-            cout << (tem == -1 ? 0 : g.kth_weight(u,tem)) << " ";
-            //cout << (tem == -1 ? 0 : 1) << " ";
+            adj_file << (tem == -1 ? 0 : 1) << " ";
+            adj_w_file << (tem == -1 ? 0 : g.kth_weight(u,tem)) << " ";
         }
-        cout << endl;
-    }*/
+        adj_file << '\n';
+        adj_w_file << '\n';
+    }
+    
+    adj_file.close();
+
     
     return 0;
 }
