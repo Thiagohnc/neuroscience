@@ -30,7 +30,6 @@ ba, baqt = 0, 0
 bb, bbqt = 0, 0
 
 threshold = 0.5
-tp, fp, fn, tn = 0, 0, 0, 0
 
 data = []
 for i in range(n):
@@ -42,22 +41,10 @@ for i in range(n):
         data[i].append(0 if math.isnan(corr) else corr)
         # data[i].append(spikes[i][j])
 
-        if i != j and not math.isnan(corr):
-            if i < j < n / 2:
-                aa += abs(corr)
-                aaqt += 1
-            if i < n / 2 <= j:
-                ab += abs(corr)
-                abqt += 1
-            if i >= n / 2 > j:
-                ba += abs(corr)
-                baqt += 1
-            if j >= i >= n / 2:
-                bb += abs(corr)
-                bbqt += 1
+intra, inter = calculate_groups_averages(data, n)
 
-plt.text(0, 1.2 * n, 'Média intra: ' + str(round(aa / aaqt, 5)) + ' / ' + str(round(bb / bbqt, 5)) +
-         '\nMédia inter: ' + str(round(ab / abqt, 5)) + ' / ' + str(round(ba / baqt, 5)))
+plt.text(0, 1.2 * n, 'Média intra: ' + str(round(intra[0], 5)) + ' / ' + str(round(intra[1], 5)) +
+         '\nMédia inter: ' + str(round(inter[0], 5)) + ' / ' + str(round(inter[1], 5)))
 
 precision, recall, tp, fp, fn, tn = calculate_prediction_quality(data, adj, threshold)
 

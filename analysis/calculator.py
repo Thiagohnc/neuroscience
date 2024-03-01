@@ -1,3 +1,8 @@
+import math
+
+from sympy.physics.quantum.identitysearch import scipy
+
+
 def calculate_prediction_quality(data, truth, threshold):
     tp, fp, fn, tn = 0, 0, 0, 0
 
@@ -19,3 +24,31 @@ def calculate_prediction_quality(data, truth, threshold):
     recall = float('nan') if tp + fn == 0 else round(100 * tp / (tp + fn), 1)
 
     return precision, recall, tp, fp, fn, tn
+
+
+def calculate_groups_averages(data, n):
+    intra, inter = [0, 0], [0, 0]
+
+    bla = 0
+
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                if i < n // 2 and j < n // 2:
+                    intra[0] += abs(data[i][j])
+                    bla += 1
+                if i < n // 2 <= j:
+                    inter[0] += abs(data[i][j])
+                if i >= n // 2 > j:
+                    inter[1] += abs(data[i][j])
+                if i >= n // 2 and j >= n // 2:
+                    intra[1] += abs(data[i][j])
+
+    print(bla, (n//2) ** 2 - (n//2))
+
+    inter[0] /= (n//2) * ((n+1)//2)
+    inter[1] /= (n//2) * ((n+1)//2)
+    intra[0] /= (n//2) ** 2 - (n//2)
+    intra[1] /= ((n+1)//2) ** 2 - ((n+1)//2)
+
+    return intra, inter
