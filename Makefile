@@ -1,5 +1,5 @@
 CC = g++
-FLAGS = -Wall -O3
+FLAGS = -Wall -O3 -std=c++17
 
 all: clean main
 
