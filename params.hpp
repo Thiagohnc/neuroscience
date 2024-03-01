@@ -9,6 +9,7 @@ double param_p();
 double param_q();
 int param_N();
 int param_T();
+double param_alpha_ewma();
 double param_w_intra_mean();
 double param_w_intra_std();
 double param_w_inter_mean();

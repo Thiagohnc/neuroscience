@@ -51,6 +51,10 @@ int param_T() {
     return stoi(get_param("T"));
 }
 
+double param_alpha_ewma() {
+    return stod(get_param("alpha_ewma"));
+}
+
 double param_w_intra_mean() {
     return stod(get_param("w_intra_mean"));
 }
