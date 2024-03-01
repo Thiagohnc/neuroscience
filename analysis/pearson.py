@@ -2,6 +2,7 @@ import math
 
 from matplotlib.widgets import TextBox
 
+from calculator import *
 from utils import *
 from reader import *
 import matplotlib.pyplot as plt
@@ -37,19 +38,9 @@ for i in range(n):
     for j in range(n):
         if j == 0:
             print(i)
-        corr = 1#scipy.stats.pearsonr(spikes[i][:-1], spikes[j][1:]).statistic
+        corr = scipy.stats.pearsonr(spikes[i][:-1], spikes[j][1:]).statistic
         data[i].append(0 if math.isnan(corr) else corr)
         # data[i].append(spikes[i][j])
-
-        if i != j:
-            if adj[i][j] == 1 and abs(data[i][j]) >= threshold:
-                tp += 1
-            if adj[i][j] == 0 and abs(data[i][j]) >= threshold:
-                fp += 1
-            if adj[i][j] == 1 and abs(data[i][j]) < threshold:
-                fn += 1
-            if adj[i][j] == 0 and abs(data[i][j]) < threshold:
-                tn += 1
 
         if i != j and not math.isnan(corr):
             if i < j < n / 2:
@@ -68,8 +59,7 @@ for i in range(n):
 plt.text(0, 1.2 * n, 'Média intra: ' + str(round(aa / aaqt, 5)) + ' / ' + str(round(bb / bbqt, 5)) +
          '\nMédia inter: ' + str(round(ab / abqt, 5)) + ' / ' + str(round(ba / baqt, 5)))
 
-precision = float('nan') if tp + fp == 0 else round(100*tp/(tp + fp), 1)
-recall = float('nan') if tp + fn == 0 else round(100*tp/(tp + fn), 1)
+precision, recall, tp, fp, fn, tn = calculate_prediction_quality(data, adj, threshold)
 
 message += f'\n\nThreshold: {threshold}' + '\n'
 message += f'Precision: {precision}%' + '\n'
@@ -87,10 +77,21 @@ plt.title(f'EWMA - Alpha = {params["alpha_ewma"]}')
 plt.tight_layout()
 
 def submit(text):
-    global message, threshold
+    global message, threshold,\
+        precision, recall, tp, fp, fn, tn
 
     threshold = float(text)
+
+    precision, recall, tp, fp, fn, tn = calculate_prediction_quality(data, adj, threshold)
+
     message = re.sub(r'(Threshold:)[^\n]*', fr'\1 {text}', message)
+    message = re.sub(r'(Precision:)[^\n]*', fr'\1 {precision}', message)
+    message = re.sub(r'(Recall:)[^\n]*', fr'\1 {recall}', message)
+    message = re.sub(r'(True Pos.:)[^\n]*', fr'\1 {tp}', message)
+    message = re.sub(r'(True Neg.:)[^\n]*', fr'\1 {tn}', message)
+    message = re.sub(r'(False Pos:)[^\n]*', fr'\1 {fp}', message)
+    message = re.sub(r'(False Neg:)[^\n]*', fr'\1 {fn}', message)
+
     plt_text.set_text(message)
     plt.draw()
 
