@@ -38,22 +38,9 @@ adj = read_input('adjacency_0_1', int)
 
 n = int(params['N'])
 
-aa, aaqt = 0, 0
-ab, abqt = 0, 0
-ba, baqt = 0, 0
-bb, bbqt = 0, 0
-
 threshold = 0.5
 
-data = []
-for i in range(n):
-    data.append([])
-    for j in range(n):
-        if j == 0:
-            print(i)
-        corr = scipy.stats.pearsonr(spikes[i][:-1], spikes[j][1:]).statistic
-        data[i].append(0 if math.isnan(corr) else corr)
-        # data[i].append(spikes[i][j])
+data = calculate_pearson_corr(spikes, n, verbose=True)
 
 intra, inter = calculate_groups_averages(data, n)
 
