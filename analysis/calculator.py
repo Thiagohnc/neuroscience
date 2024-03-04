@@ -65,7 +65,7 @@ def calculate_pearson_corr(spikes, n, tmax=None, verbose=False):
 
 
 def calculate_precision_recall_over_time(tmin, tmax, step, spikes, n, adj, threshold=0.5):
-    for t in range(tmin, tmax + 1, step):
+    for t in range(tmin, tmax, step):
         data = calculate_pearson_corr(spikes, n, t)
         precision, recall, _, _, _, _ = calculate_prediction_quality(data, adj, threshold)
         print(t, precision, recall)
