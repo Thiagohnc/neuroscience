@@ -83,6 +83,10 @@ double param_inter_exchitatory_portion() {
     return stod(get_param("inter_exchitatory_portion"));
 }
 
+string param_output_folder() {
+    return get_param("output_folder");
+}
+
 unsigned int param_seed() {
     static int seed = rd();
     string seed_str = get_param("seed");

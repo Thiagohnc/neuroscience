@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -81,16 +82,21 @@ int main(void) {
         }
     }
     
+    /* Creating Output Folder */
+    
+    string output_folder = param_output_folder();
+    mkdir(output_folder.data(), 0777);
+    
     /* Save current parameters in file */
     
     ifstream params_source("params.txt", ios::binary);
-    ofstream params_dest("out/params", ios::binary);
+    ofstream params_dest(output_folder + "/params", ios::binary);
     params_dest << params_source.rdbuf();
     
     /* Output Spike Trains & Firing Rate */
     
-    ofstream spike_trains_file("out/spike_trains");
-    ofstream firing_rate_file("out/firing_rate");
+    ofstream spike_trains_file(output_folder + "/spike_trains");
+    ofstream firing_rate_file(output_folder + "/firing_rate");
     
     if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
     if(!firing_rate_file.is_open()) {cout << "Unable to open file firing_rate" << '\n'; exit(0);}
@@ -109,7 +115,7 @@ int main(void) {
     
     /* Output EWMA */
     
-    ofstream ewma_file("out/ewma");
+    ofstream ewma_file(output_folder + "/ewma");
     
     if(!ewma_file.is_open()) {cout << "Unable to open file ewma" << '\n'; exit(0);}
     
@@ -149,8 +155,8 @@ int main(void) {
     
     /* Output Adjacency List */
 
-    ofstream adj_file("out/adjacency_0_1");
-    ofstream adj_w_file("out/adjacency_weights");
+    ofstream adj_file(output_folder + "/adjacency_0_1");
+    ofstream adj_w_file(output_folder + "/adjacency_weights");
     
     if(!adj_file.is_open()) {cout << "Unable to open file adjacency_0_1" << '\n'; exit(0);}
     if(!adj_w_file.is_open()) {cout << "Unable to open file adjacency_weights" << '\n'; exit(0);}
