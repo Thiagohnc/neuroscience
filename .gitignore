@@ -1,7 +1,8 @@
 *.o
+*.txt
+*.sh
 main
 out/*
 !out/.gitkeep
 .idea/*
 **/__pycache__/
-params.txt
