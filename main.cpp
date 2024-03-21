@@ -9,7 +9,13 @@
 
 using namespace std;
 
-int main(void) { 
+int main(int argc, char *argv[]) { 
+    if(argc > 1) 
+        set_params_path(argv[1]);
+    else
+        set_params_path("params.txt");
+    set_seed(param_seed());
+    
     const int N = param_N();
     const int T = param_T();
 

@@ -11,12 +11,17 @@
 
 using namespace std;
 
+string params_path;
 map<string,string> param_values;
 std::random_device rd;
 
+void set_params_path(string _params_path) {
+    params_path = _params_path;
+}
+
 void read_params() {
     string line;
-    ifstream file("params.txt");
+    ifstream file(params_path);
     if(file.is_open()) {
         while(getline(file,line)) {
             pair<string,string> p_val = split(line, '=');
@@ -29,7 +34,7 @@ string get_param(string param_name) {
     if(param_values.find(param_name) == param_values.end()) {
         read_params();
         if(param_values.find(param_name) == param_values.end()) {
-            throw invalid_argument("Param " + param_name + " not found in params.txt");
+            throw invalid_argument("Param " + param_name + " not found in " + params_path);
         }
     }
     return param_values[param_name];

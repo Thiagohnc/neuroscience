@@ -9,9 +9,9 @@
 
 using namespace std;
 
-mt19937 twister{param_seed()};
-std::default_random_engine generator(param_seed());
-std::uniform_real_distribution<double> rand_real(0,1);
+mt19937 twister;
+default_random_engine generator;
+uniform_real_distribution<double> rand_real(0,1);
 
 int rand(int cap) {
 	return twister() % cap;
@@ -45,4 +45,9 @@ double logistic(double x) {
 double inverse_logistic(double y) {
     assert(y > 0 && y < 1);
     return log(y / (1 - y));
+}
+
+void set_seed(int seed) {
+    twister = mt19937{seed};
+    generator = default_random_engine(seed);
 }
