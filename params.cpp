@@ -8,6 +8,7 @@
 #include <random>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -24,8 +25,8 @@ void read_params() {
     ifstream file(params_path);
     if(file.is_open()) {
         while(getline(file,line)) {
-            pair<string,string> p_val = split(line, '=');
-            param_values[p_val.first] = p_val.second;
+            vector<string> p_val = split(line, '=');
+            param_values[p_val[0]] = p_val[1];
         }
     }
 }
@@ -48,12 +49,28 @@ double param_q() {
     return stod(get_param("q"));
 }
 
+double param_mu() {
+    return stod(get_param("mu"));
+}
+
+double param_mu_in() {
+    return stod(get_param("mu_in"));
+}
+
+double param_mu_out() {
+    return stod(get_param("mu_out"));
+}
+
 int param_N() {
     return stoi(get_param("N"));
 }
 
 int param_T() {
     return stoi(get_param("T"));
+}
+
+int param_BURN_T() {
+    return stoi(get_param("BURN_T"));
 }
 
 double param_alpha_ewma() {
@@ -88,8 +105,16 @@ double param_inter_exchitatory_portion() {
     return stod(get_param("inter_exchitatory_portion"));
 }
 
+double param_pw() {
+    return stod(get_param("pw"));
+}
+
 string param_output_folder() {
     return get_param("output_folder");
+}
+
+unsigned int param_samples() {
+    return stoi(get_param("samples"));
 }
 
 unsigned int param_seed() {
