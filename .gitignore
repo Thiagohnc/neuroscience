@@ -4,5 +4,5 @@
 main
 out/*
 !out/.gitkeep
-.idea/*
+*/.idea/*
 **/__pycache__/
