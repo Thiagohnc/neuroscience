@@ -36,9 +36,9 @@ int main(int argc, char *argv[]) {
         M = (double**) malloc(sizeof(double*) * N);
 
         for(int i = 0; i < N; i++) {
-            spike[i] = (bool*) malloc(sizeof(bool) * (T + BURN_T + 1));
-            fire_rate[i] = (double*) malloc(sizeof(double) * (T + BURN_T + 1));
-            M[i] = (double*) malloc(sizeof(double) * (T + BURN_T + 1));
+            spike[i] = (bool*) malloc(sizeof(bool) * (T + 1));
+            fire_rate[i] = (double*) malloc(sizeof(double) * (T + 1));
+            M[i] = (double*) malloc(sizeof(double) * (T + 1));
         }
 
         /* Graph Creation */
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
         
         for(int u = 0; u < N; u++) {
             M[u][0] = 0.01;
-            for(int t = 0; t <= (T + BURN_T); t++) {
+            for(int t = 0; t <= T ; t++) {
                 fire_rate[u][t] = g.kth_node(u).b();
                 spike[u][t] = 0;
             }
@@ -73,10 +73,11 @@ int main(int argc, char *argv[]) {
         }
         
         /* Simulation */
+		
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
-                fire_rate[u][t] = param_mu();
+                fire_rate[u][t%(T+1)] = param_mu();
             }
             
             /* Activation by neighbors */
@@ -85,14 +86,14 @@ int main(int argc, char *argv[]) {
                     for(int k = 0; k < g.neighbor_quantity(u); k++) {
                         int v = g.kth_neighbor(u,k);
                         int w = g.kth_weight(u,k);
-                        fire_rate[v][t] += (w * spike[u][tt])/(double)N;
+                        fire_rate[v][t%(T+1)] += (w * spike[u][tt%(T+1)])/(double)N;
                     }
                 }
             }
             
             /* Firing */
             for(int u = 0; u < N; u++) {
-                spike[u][t] = coin_flip(fire_rate[u][t]);
+                spike[u][t%(T+1)] = coin_flip(fire_rate[u][t%(T+1)]);
             }
         }
         
@@ -117,8 +118,8 @@ int main(int argc, char *argv[]) {
         
         for(int u = 0; u < N; u++) {
             for(int t = BURN_T; t < (T + BURN_T); t++) {
-                spike_trains_file << spike[u][t] << " ";
-                firing_rate_file << fire_rate[u][t] << " ";
+                spike_trains_file << spike[u][t%(T+1)] << " ";
+                firing_rate_file << fire_rate[u][t%(T+1)] << " ";
             }
             spike_trains_file << '\n';
             firing_rate_file << '\n';
@@ -127,6 +128,7 @@ int main(int argc, char *argv[]) {
         spike_trains_file.close();
         firing_rate_file.close();
         
+		// TODO: add circular time (mod T + 1) to EWMA
         /* Output EWMA */
         
         // ofstream ewma_file(output_folder + "/ewma");
