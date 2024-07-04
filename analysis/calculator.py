@@ -54,20 +54,13 @@ def calculate_groups_averages(data, n):
     return intra, inter
 
 
-def calc_pearsonr(spikes, data, i, j):
-    corr = stats.pearsonr(spikes[i][:-1], spikes[j][1:]).statistic
-    data[i][j] = 0 if math.isnan(corr) else corr
-
-
 def calculate_pearson_corr(spikes, n):
     data = []
     for i in tqdm(range(n)):
         data.append([0] * n)
-
         for j in range(n):
-            x = threading.Thread(target=calc_pearsonr, args=(spikes, data, i, j,))
-            x.start()
-
+            corr = stats.pearsonr(spikes[i][:-1], spikes[j][1:]).statistic
+            data[i][j] = 0 if math.isnan(corr) else corr
     return data
 
 
