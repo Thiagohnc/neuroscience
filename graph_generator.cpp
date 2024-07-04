@@ -1,4 +1,5 @@
 #include "graph_generator.hpp"
+#include "graph.hpp"
 #include "utils.hpp"
 #include "params.hpp"
 #include <cassert>
@@ -10,11 +11,9 @@
 
 Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector<std::vector<double> > &p) {
     std::default_random_engine generator(param_seed());
-    std::normal_distribution<double> intra(param_w_intra_mean(), param_w_intra_std());
-    std::normal_distribution<double> inter(param_w_inter_mean(), param_w_inter_std());
     double intra_exc_portion = param_intra_exchitatory_portion();
     double inter_exc_portion = param_inter_exchitatory_portion();
-    double b = inverse_logistic(param_auto_activ());
+    double b = inverse_logistic(param_mu());
     
     int N = 0;
     
@@ -40,12 +39,12 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
                     if(o == d) continue;
                     
                     if(g_orig == g_dest) {
-                        weight = intra(generator);
+                        weight = param_mu_in();
                         if(coin_flip(1 - intra_exc_portion))
                             weight *= -1;
                     }
                     else {
-                        weight = inter(generator);
+                        weight = param_mu_out();
                         if(coin_flip(1 - inter_exc_portion))
                             weight *= -1;
                     }
