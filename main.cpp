@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
             avg_w += (g.kth_node(u).W()) / N;
         }
         
-        /* Simulation - Giulio & Guilherme */
+        /* Simulation */
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
@@ -95,50 +95,6 @@ int main(int argc, char *argv[]) {
                 spike[u][t] = coin_flip(fire_rate[u][t]);
             }
         }
-        
-        /* Simulation - Daniel */
-        //double pw = param_pw();
-        //double auto_activ = param_auto_activ();
-        //for(int t = 0; t <= T; t++) {
-        //    /* Activation by neighbors */
-        //    for(int u = 0; u < N; u++) {
-        //        for(int tt = max(0, t - 1); tt < t; tt++) {
-        //            for(int k = 0; k < g.neighbor_quantity(u); k++) {
-        //                int v = g.kth_neighbor(u,k);
-        //                spike[v][t] |= (spike[u][tt] && coin_flip(pw));
-        //            }
-        //        }
-        //    }
-        //    
-        //    /* Auto activation */
-        //    for(int u = 0; u < N; u++) {
-        //        spike[u][t] |= coin_flip(auto_activ);
-        //    }
-        //}
-        
-        /* Simulation */
-        //for(int t = 0; t <= T; t++) {
-        //    /* Calculating Fire Rate */
-        //    for(int u = 0; u < N; u++) {
-        //        for(int tt = max(0, t - 1); tt < t; tt++) {
-        //            //cout << t << " " << tt << '\n';
-        //            for(int k = 0; k < g.neighbor_quantity(u); k++) {
-        //                int v = g.kth_neighbor(u,k);
-        //                double w = g.kth_weight(u,k);
-        //                //fire_rate[v][t] += w * spike[u][tt];
-        //                fire_rate[v][t] += (w * spike[u][tt]) / N;
-        //                //fire_rate[v][t] += (w * spike[u][tt]) / g.kth_node(u).W();
-        //                //fire_rate[v][t] += (w * spike[u][tt]) / avg_w;
-        //            }
-        //        }
-        //    }
-        //    
-        //    /* Firing */
-        //    for(int u = 0; u < N; u++) {
-        //        double prob = logistic(fire_rate[u][t]);
-        //        spike[u][t] = coin_flip(prob);
-        //    }
-        //}
         
         /* Creating Output Folder */
         
@@ -192,24 +148,6 @@ int main(int argc, char *argv[]) {
         // }
         // 
         // ewma_file.close();
-        
-        /*int window = 50;
-        for(int u = 0; u < N; u++) {
-            for(int t = 0; t < T; t++) {
-                double val = 0;
-                for(int tt = max(0,t-window); tt < min(T,t+window+1); tt++) {
-                    val += spike[u][tt];
-                }
-                val /= (double)(2 * window + 1);
-                
-                val = min(val, 1 - 1e-10);
-                val = max(val, 1e-10);
-                
-                cout << inverse_logistic(val) << " ";
-            }
-            cout << '\n';
-        }*/
-        
         
         /* Output Adjacency List */
 
