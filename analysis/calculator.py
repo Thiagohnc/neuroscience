@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 from scipy import stats
 
-from reader import read_input
+from reader import read_input, read_input_line, list_line_start_indexes
 
 
 def calculate_prediction_quality(data, truth, threshold):
@@ -54,12 +54,14 @@ def calculate_groups_averages(data, n):
     return intra, inter
 
 
-def calculate_pearson_corr(spikes, n):
+def calculate_pearson_corr(n, input_folder):
     data = []
     for i in tqdm(range(n)):
+        spikes_i = read_input_line('spike_trains', i, float, input_folder)
         data.append([0] * n)
         for j in range(n):
-            corr = stats.pearsonr(spikes[i][:-1], spikes[j][1:]).statistic
+            spikes_j = read_input_line('spike_trains', j, float, input_folder)
+            corr = stats.pearsonr(spikes_i[:-1], spikes_j[1:]).statistic
             data[i][j] = 0 if math.isnan(corr) else corr
     return data
 

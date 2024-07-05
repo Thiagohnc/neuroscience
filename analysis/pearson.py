@@ -72,12 +72,11 @@ for i in range(n):
 
 for sample in range(samples):
     input_folder = input_folder_base + '/' + str(sample + 1)
-    spikes = read_input('spike_trains', float, input_folder)
     adj = read_input('adjacency_0_1', int, input_folder)
 
     threshold = 0.25
 
-    sample_data = calculate_pearson_corr(spikes, n)
+    sample_data = calculate_pearson_corr(n, input_folder)
     for i in range(n):
         for j in range(n):
             data[i][j] += sample_data[i][j] / samples
