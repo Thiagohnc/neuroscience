@@ -1,14 +1,15 @@
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <cmath>
 #include <string>
 #include <vector>
-#include <unistd.h>
 
 #include <chrono>
 using namespace std::chrono;
-
 using namespace std;
+
+typedef chrono::time_point<chrono::high_resolution_clock> timepoint;
 
 // Copied from utils.cpp
 vector<string> split(string str, char delim) {
@@ -35,6 +36,36 @@ vector<int> vector_to_ints(vector<string> v) {
         ans.push_back(stoi(v[i]));
     }
     return ans;
+}
+
+void progress_bar(int done, int total, string name) {
+	static timepoint start;
+	static bool started = false;
+	const int bar_size = 50;
+	double progress = (double)done/total;
+	int filled = bar_size * progress;
+	int blank = bar_size - filled;
+	
+	if(!started) {
+		started = true;
+		start = high_resolution_clock::now();
+	}
+	
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	
+	cout << "[";
+	for(int i = 0; i < filled; i++) cout << "\u25A0";
+	for(int i = 0; i < blank; i++) cout << " ";
+	cout << "] " << (int)(100 * progress) << "% - " << name;
+	cout << setprecision(3) << " (" << duration.count()/1e6 << "s)    \r";
+	cout.flush();
+	
+	
+	if(done == total) {
+		cout << endl;
+		started = false;
+	}
 }
 
 double mean(vector<int> &v) {
@@ -82,12 +113,14 @@ vector<vector<double>> pearson_all_pairs(vector<vector<int>> &spikes, int delay)
 			dens[i] += (spikes[i][t] - means[i]) * (spikes[i][t] - means[i]);
 			delayed_dens[i] += (spikes[i][t + delay] - means[i]) * (spikes[i][t + delay] - means[i]);
 		}
+		progress_bar(i + 1, (int)spikes.size(), "Pré-cálculo de médias e denominadores");
 	}
 	
 	for(int i = 0; i < (int)spikes.size(); i++) {
 		for(int j = 0; j < (int)spikes.size(); j++) {
 			corr[i].push_back(pearson(i, j, spikes, means, dens, delayed_dens, delay));
 		}
+		progress_bar(i + 1, (int)spikes.size(), "Cálculo de Pearson");
 	}
 	
 	return corr;
@@ -97,21 +130,17 @@ int main(int argc, char *argv[]) {
 	vector<vector<int>> spikes;
 	string line;
 	
-	auto start0 = high_resolution_clock::now();
+	int file_size = filesystem::file_size(filesystem::path("../out/teste/1/spike_trains"));
+	int readed = 0;
 	
     ifstream file("../out/teste/1/spike_trains");
     if(file.is_open()) {
         while(getline(file,line)) {
 			spikes.push_back(vector_to_ints(split(line, ' ')));
+			readed += line.size() + 1;
+			progress_bar(readed, file_size, "Leitura do input");
         }
     }
-	
-	auto stop0 = high_resolution_clock::now();
-	auto duration0 = duration_cast<microseconds>(stop0 - start0);
-	
-	cout << duration0.count()/1e6 << " segundos para carregar na memória" << endl;
-	
-	auto start = high_resolution_clock::now();
 	
 	ofstream pearson_file("pearson");
 	
@@ -121,12 +150,7 @@ int main(int argc, char *argv[]) {
 			pearson_file << corr[i][j] << " ";
 		}
 		pearson_file << endl;
+		progress_bar(i + 1, (int)spikes.size(), "Escrita no output");
 	}
-	
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<microseconds>(stop - start);
-	
-	cout << duration.count()/1e6 << " segundos para calcular os coeficientes" << endl;
-	
 	return 0;
 }
