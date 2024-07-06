@@ -29,16 +29,13 @@ int main(int argc, char *argv[]) {
 
         bool** spike;
         double** fire_rate;
-        double** M;
 
         spike = (bool**) malloc(sizeof(bool*) * N);
         fire_rate = (double**) malloc(sizeof(double*) * N);
-        M = (double**) malloc(sizeof(double*) * N);
 
         for(int i = 0; i < N; i++) {
             spike[i] = (bool*) malloc(sizeof(bool) * (T + 1));
             fire_rate[i] = (double*) malloc(sizeof(double) * (T + 1));
-            M[i] = (double*) malloc(sizeof(double) * (T + 1));
         }
 
         /* Graph Creation */
@@ -60,7 +57,6 @@ int main(int argc, char *argv[]) {
         /* Initialization */
         
         for(int u = 0; u < N; u++) {
-            M[u][0] = 0.01;
             for(int t = 0; t <= T ; t++) {
                 fire_rate[u][t] = g.kth_node(u).b();
                 spike[u][t] = 0;
@@ -127,29 +123,6 @@ int main(int argc, char *argv[]) {
         
         spike_trains_file.close();
         firing_rate_file.close();
-        
-		// TODO: add circular time (mod T + 1) to EWMA
-        /* Output EWMA */
-        
-        // ofstream ewma_file(output_folder + "/ewma");
-        // 
-        // if(!ewma_file.is_open()) {cout << "Unable to open file ewma" << '\n'; exit(0);}
-        // 
-        // double alpha = param_alpha_ewma();
-        // for(int u = 0; u < N; u++) {
-        //     ewma_file << M[u][0] << " ";
-        //     for(int t = BURN_T; t <= (T + BURN_T); t++) {
-        //         M[u][t] = alpha * spike[u][t] + (1 - alpha) * M[u][t-1];
-        //         
-        //         M[u][t] = min(M[u][t], 1 - 1e-10);
-        //         M[u][t] = max(M[u][t], 1e-10);
-		// 
-        //         ewma_file << inverse_logistic(M[u][t]) << " ";
-        //     }
-        //     ewma_file << '\n';
-        // }
-        // 
-        // ewma_file.close();
         
         /* Output Adjacency List */
 
