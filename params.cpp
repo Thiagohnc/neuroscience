@@ -25,6 +25,7 @@ void read_params() {
     ifstream file(params_path);
     if(file.is_open()) {
         while(getline(file,line)) {
+			if(line[0] == '#') continue;
             vector<string> p_val = split(line, '=');
             param_values[p_val[0]] = p_val[1];
         }
