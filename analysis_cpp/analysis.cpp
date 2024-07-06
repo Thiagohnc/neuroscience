@@ -3,6 +3,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -49,13 +50,47 @@ double pearson(vector<int> &a, vector<int> &b, int delay) {
 	double mean_b = mean(b);
 	double num = 0, den_a = 0, den_b = 0;
 	
-	for(int i = 0 + delay; i < (int)a.size() - delay; i++) {
-		num += (a[i] - mean_a) * (b[i + delay] - mean_b);
-		den_a += (a[i] - mean_a) * (a[i] - mean_a);
-		den_b += (b[i + delay] - mean_b) * (b[i + delay] - mean_b);
+	for(int t = 0; t < (int)a.size() - delay; t++) {
+		num += (a[t] - mean_a) * (b[t + delay] - mean_b);
+		den_a += (a[t] - mean_a) * (a[t] - mean_a);
+		den_b += (b[t + delay] - mean_b) * (b[t + delay] - mean_b);
 	}
 	
 	return num / sqrt(den_a * den_b);
+}
+
+double pearson(int a, int b, vector<vector<int>> &spikes, vector<double> &means, vector<double> &dens, vector<double> &delayed_dens, int delay) {
+	double num = 0;
+	
+	for(int t = 0; t < (int)spikes[a].size() - delay; t++) {
+		num += (spikes[a][t] - means[a]) * (spikes[b][t + delay] - means[b]);
+	}
+	
+	return num / sqrt(dens[a] * delayed_dens[b]);
+}
+
+vector<vector<double>> pearson_all_pairs(vector<vector<int>> &spikes, int delay) {
+	vector<double> means(spikes.size());
+	vector<double> dens(spikes.size());
+	vector<double> delayed_dens(spikes.size());
+	vector<vector<double>> corr(spikes.size());
+	
+	for(int i = 0; i < (int)spikes.size(); i++) {
+		means[i] = mean(spikes[i]);
+		dens[i] = delayed_dens[i] = 0;
+		for(int t = 0; t < (int)spikes[i].size() - delay; t++) {
+			dens[i] += (spikes[i][t] - means[i]) * (spikes[i][t] - means[i]);
+			delayed_dens[i] += (spikes[i][t + delay] - means[i]) * (spikes[i][t + delay] - means[i]);
+		}
+	}
+	
+	for(int i = 0; i < (int)spikes.size(); i++) {
+		for(int j = 0; j < (int)spikes.size(); j++) {
+			corr[i].push_back(pearson(i, j, spikes, means, dens, delayed_dens, delay));
+		}
+	}
+	
+	return corr;
 }
 
 int main(int argc, char *argv[]) {
@@ -79,10 +114,11 @@ int main(int argc, char *argv[]) {
 	auto start = high_resolution_clock::now();
 	
 	ofstream pearson_file("pearson");
+	
+	vector<vector<double>> corr = pearson_all_pairs(spikes, 1);
 	for(int i = 0; i < (int)spikes.size(); i++) {
-		if(i%20 == 0) cout << "i = " << i << endl;
 		for(int j = 0; j < (int)spikes.size(); j++) {
-			pearson_file << pearson(spikes[i], spikes[j], 1) << " ";
+			pearson_file << corr[i][j] << " ";
 		}
 		pearson_file << endl;
 	}
