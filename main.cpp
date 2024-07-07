@@ -29,15 +29,12 @@ int main(int argc, char *argv[]) {
 		
         set_seed(samples_seeds[sample]);
 
-        bool** spike;
-        double** fire_rate;
-
-        spike = (bool**) malloc(sizeof(bool*) * N);
-        fire_rate = (double**) malloc(sizeof(double*) * N);
+        vector<vector<bool>> spike(N);
+        vector<vector<double>> fire_rate(N);
 
         for(int i = 0; i < N; i++) {
-            spike[i] = (bool*) malloc(sizeof(bool) * (T + 1));
-            fire_rate[i] = (double*) malloc(sizeof(double) * (T + 1));
+            spike[i].reserve(T+1);
+            fire_rate[i].reserve(T+1);
         }
 
         /* Graph Creation */
