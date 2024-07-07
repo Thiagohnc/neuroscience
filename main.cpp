@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 		
         set_seed(samples_seeds[sample]);
 
-        vector<vector<bool>> spike_trains(N);
+        vector<vector<int>> spike_trains(N);
         vector<vector<double>> firing_rate(N);
 
         for(int i = 0; i < N; i++) {
