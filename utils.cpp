@@ -2,7 +2,9 @@
 #include "utils.hpp"
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <random>
 #include <stdexcept>
@@ -11,6 +13,7 @@
 #include <vector>
 
 using namespace std;
+using namespace std::chrono;
 
 mt19937 twister;
 default_random_engine generator;
@@ -40,6 +43,14 @@ int mod(int x, int m) {
     while(x < 0)
         x += m;
     return x % m;
+}
+
+double mean(vector<int> &v) {
+	long long int sum = 0;
+	for(int i = 0; i < (int)v.size(); i++) {
+		sum += v[i];
+	}
+	return (double)sum/v.size();
 }
 
 vector<int> vector_to_ints(vector<string> v) {
@@ -97,6 +108,36 @@ double logistic(double x) {
 double inverse_logistic(double y) {
     assert(y > 0 && y < 1);
     return log(y / (1 - y));
+}
+
+void progress_bar(int done, int total, string name) {
+	static timepoint start;
+	static bool started = false;
+	const int bar_size = 50;
+	double progress = (double)done/total;
+	int filled = bar_size * progress;
+	int blank = bar_size - filled;
+	
+	if(!started) {
+		started = true;
+		start = high_resolution_clock::now();
+	}
+	
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+	
+	cout << "[";
+	for(int i = 0; i < filled; i++) cout << "\u25A0";
+	for(int i = 0; i < blank; i++) cout << " ";
+	cout << "] " << (int)(100 * progress) << "% - " << name;
+	cout << setprecision(3) << " (" << duration.count()/1e6 << "s)    \r";
+	cout.flush();
+	
+	
+	if(done == total) {
+		cout << endl;
+		started = false;
+	}
 }
 
 void mkdir_tree(string folder) {

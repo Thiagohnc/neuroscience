@@ -3,14 +3,17 @@ FLAGS = -Wall -O3 -std=c++17
 
 all: clean main
 
-main: main.cpp graph_generator.o graph.o params.o utils.o
-	$(CC) $(FLAGS) main.cpp graph_generator.o graph.o params.o utils.o -o main
+main: main.cpp graph_generator.o graph.o analysis.o params.o utils.o
+	$(CC) $(FLAGS) main.cpp graph_generator.o graph.o analysis.o params.o utils.o -o main
 
 graph_generator.o: graph_generator.cpp graph_generator.hpp graph.hpp utils.hpp
 	$(CC) $(FLAGS)  graph_generator.cpp -c -o graph_generator.o
 
 graph.o: graph.cpp graph.hpp utils.hpp
 	$(CC) $(FLAGS)  graph.cpp -c -o graph.o
+
+analysis.o: analysis.cpp analysis.hpp utils.hpp
+	$(CC) $(FLAGS) analysis.cpp -c -o analysis.o
 
 params.o: params.cpp params.hpp utils.hpp
 	$(CC) $(FLAGS) params.cpp -c -o params.o
