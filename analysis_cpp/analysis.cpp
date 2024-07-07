@@ -76,20 +76,6 @@ double mean(vector<int> &v) {
 	return (double)sum/v.size();
 }
 
-double pearson(vector<int> &a, vector<int> &b, int delay) {
-	double mean_a = mean(a);
-	double mean_b = mean(b);
-	double num = 0, den_a = 0, den_b = 0;
-	
-	for(int t = 0; t < (int)a.size() - delay; t++) {
-		num += (a[t] - mean_a) * (b[t + delay] - mean_b);
-		den_a += (a[t] - mean_a) * (a[t] - mean_a);
-		den_b += (b[t + delay] - mean_b) * (b[t + delay] - mean_b);
-	}
-	
-	return num / sqrt(den_a * den_b);
-}
-
 double pearson(int a, int b, vector<vector<int>> &spikes, vector<double> &means, vector<double> &dens, vector<double> &delayed_dens, int delay) {
 	double num = 0;
 	
