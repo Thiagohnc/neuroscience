@@ -24,7 +24,9 @@ int main(int argc, char *argv[]) {
     const int T = param_T();
     const int BURN_T = param_BURN_T();
     
-    for(int sample = 0; sample < samples; sample++) {  
+    for(int sample = 0; sample < samples; sample++) {
+		cout << "Amostra " << sample + 1 << " de " << samples << ":" << endl;
+		
         set_seed(samples_seeds[sample]);
 
         bool** spike;
@@ -91,6 +93,8 @@ int main(int argc, char *argv[]) {
             for(int u = 0; u < N; u++) {
                 spike[u][t%(T+1)] = coin_flip(fire_rate[u][t%(T+1)]);
             }
+			
+			progress_bar(t + 1, T + BURN_T, "Simulação");
         }
         
         /* Creating Output Folder */
