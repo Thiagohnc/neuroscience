@@ -29,12 +29,12 @@ int main(int argc, char *argv[]) {
 		
         set_seed(samples_seeds[sample]);
 
-        vector<vector<bool>> spike(N);
-        vector<vector<double>> fire_rate(N);
+        vector<vector<bool>> spike_trains(N);
+        vector<vector<double>> firing_rate(N);
 
         for(int i = 0; i < N; i++) {
-            spike[i].reserve(T+1);
-            fire_rate[i].reserve(T+1);
+            spike_trains[i].reserve(T+1);
+            firing_rate[i].reserve(T+1);
         }
 
         /* Graph Creation */
@@ -57,8 +57,8 @@ int main(int argc, char *argv[]) {
         
         for(int u = 0; u < N; u++) {
             for(int t = 0; t <= T ; t++) {
-                fire_rate[u][t] = g.kth_node(u).b();
-                spike[u][t] = 0;
+                firing_rate[u][t] = g.kth_node(u).b();
+                spike_trains[u][t] = 0;
             }
         }
         
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
-                fire_rate[u][t%(T+1)] = param_mu();
+                firing_rate[u][t%(T+1)] = param_mu();
             }
             
             /* Activation by neighbors */
@@ -81,14 +81,14 @@ int main(int argc, char *argv[]) {
                     for(int k = 0; k < g.neighbor_quantity(u); k++) {
                         int v = g.kth_neighbor(u,k);
                         int w = g.kth_weight(u,k);
-                        fire_rate[v][t%(T+1)] += (w * spike[u][tt%(T+1)])/(double)N;
+                        firing_rate[v][t%(T+1)] += (w * spike_trains[u][tt%(T+1)])/(double)N;
                     }
                 }
             }
             
             /* Firing */
             for(int u = 0; u < N; u++) {
-                spike[u][t%(T+1)] = coin_flip(fire_rate[u][t%(T+1)]);
+                spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%(T+1)]);
             }
 			
 			progress_bar(t + 1, T + BURN_T, "Simulação");
@@ -112,7 +112,7 @@ int main(int argc, char *argv[]) {
 			if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
-					spike_trains_file << spike[u][t%(T+1)] << " ";
+					spike_trains_file << spike_trains[u][t%(T+1)] << " ";
 				}
 				spike_trains_file << '\n';
 			}
@@ -126,7 +126,7 @@ int main(int argc, char *argv[]) {
 			if(!firing_rate_file.is_open()) {cout << "Unable to open file firing_rate" << '\n'; exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
-					firing_rate_file << fire_rate[u][t%(T+1)] << " ";
+					firing_rate_file << firing_rate[u][t%(T+1)] << " ";
 				}
 				firing_rate_file << '\n';
 			}
