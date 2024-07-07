@@ -153,6 +153,8 @@ int main(int argc, char *argv[]) {
 			adj_file.close();
         }
 		
+		/* Output Adjacency Weights List */
+		
 		if(param_adjacency_weights_file()) {
 			ofstream adj_w_file(output_folder + "/adjacency_weights");
 			if(!adj_w_file.is_open()) {cout << "Unable to open file adjacency_weights" << '\n'; exit(0);}
