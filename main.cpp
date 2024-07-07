@@ -104,48 +104,73 @@ int main(int argc, char *argv[]) {
         ofstream params_dest(param_output_folder() + "/params", ios::binary);
         params_dest << params_source.rdbuf();
         
-        /* Output Spike Trains & Firing Rate */
+        /* Output Spike Trains */
         
-        ofstream spike_trains_file(output_folder + "/spike_trains");
-        ofstream firing_rate_file(output_folder + "/firing_rate");
+		if(param_spike_trains_file()) {
+			ofstream spike_trains_file(output_folder + "/spike_trains");
+			if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
+			for(int u = 0; u < N; u++) {
+				for(int t = BURN_T; t < (T + BURN_T); t++) {
+					spike_trains_file << spike[u][t%(T+1)] << " ";
+				}
+				spike_trains_file << '\n';
+			}
+			spike_trains_file.close();
+		}
+		
+		/* Output Firing Rate */
         
-        if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
-        if(!firing_rate_file.is_open()) {cout << "Unable to open file firing_rate" << '\n'; exit(0);}
+		if(param_firing_rate_file()) {
+			ofstream firing_rate_file(output_folder + "/firing_rate");
+			if(!firing_rate_file.is_open()) {cout << "Unable to open file firing_rate" << '\n'; exit(0);}
+			for(int u = 0; u < N; u++) {
+				for(int t = BURN_T; t < (T + BURN_T); t++) {
+					firing_rate_file << fire_rate[u][t%(T+1)] << " ";
+				}
+				firing_rate_file << '\n';
+			}
+			firing_rate_file.close();
+		}
         
-        for(int u = 0; u < N; u++) {
-            for(int t = BURN_T; t < (T + BURN_T); t++) {
-                spike_trains_file << spike[u][t%(T+1)] << " ";
-                firing_rate_file << fire_rate[u][t%(T+1)] << " ";
-            }
-            spike_trains_file << '\n';
-            firing_rate_file << '\n';
-        }
-        
-        spike_trains_file.close();
-        firing_rate_file.close();
-        
-        /* Output Adjacency List */
+        /* Output Adjacency 0/1 List */
 
-        ofstream adj_file(output_folder + "/adjacency_0_1");
-        ofstream adj_w_file(output_folder + "/adjacency_weights");
-        
-        if(!adj_file.is_open()) {cout << "Unable to open file adjacency_0_1" << '\n'; exit(0);}
-        if(!adj_w_file.is_open()) {cout << "Unable to open file adjacency_weights" << '\n'; exit(0);}
-        
-        for(int u = 0; u < N; u++) {
-            for(int v = 0; v < N; v++) {
-                int tem = -1;
-                for(int k = 0; k < g.neighbor_quantity(u); k++) {
-                    if(g.kth_neighbor(u,k) == v) tem = k;
-                }
-                adj_file << (tem == -1 ? 0 : 1) << " ";
-                adj_w_file << (tem == -1 ? 0 : g.kth_weight(u,tem)) << " ";
-            }
-            adj_file << '\n';
-            adj_w_file << '\n';
+		if(param_adjacency_0_1_file()) {
+			ofstream adj_file(output_folder + "/adjacency_0_1");
+			if(!adj_file.is_open()) {cout << "Unable to open file adjacency_0_1" << '\n'; exit(0);}
+			for(int u = 0; u < N; u++) {
+				for(int v = 0; v < N; v++) {
+					int connection = -1;
+					for(int k = 0; k < g.neighbor_quantity(u); k++) {
+						if(g.kth_neighbor(u,k) == v) {
+							connection = k;
+							break;
+						}
+					}
+					adj_file << (connection == -1 ? 0 : 1) << " ";
+				}
+				adj_file << '\n';
+			}
+			adj_file.close();
         }
-        
-        adj_file.close();
+		
+		if(param_adjacency_weights_file()) {
+			ofstream adj_w_file(output_folder + "/adjacency_weights");
+			if(!adj_w_file.is_open()) {cout << "Unable to open file adjacency_weights" << '\n'; exit(0);}
+			for(int u = 0; u < N; u++) {
+				for(int v = 0; v < N; v++) {
+					int connection = -1;
+					for(int k = 0; k < g.neighbor_quantity(u); k++) {
+						if(g.kth_neighbor(u,k) == v) {
+							connection = k;
+							break;
+						}
+					}
+					adj_w_file << (connection == -1 ? 0 : g.kth_weight(u,connection)) << " ";
+				}
+				adj_w_file << '\n';
+			}
+			adj_w_file.close();
+		}
     }
 
     

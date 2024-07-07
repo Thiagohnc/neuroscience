@@ -25,7 +25,7 @@ void read_params() {
     ifstream file(params_path);
     if(file.is_open()) {
         while(getline(file,line)) {
-			if(line[0] == '#') continue;
+			if(line.size() == 0 || line[0] == '#') continue;
             vector<string> p_val = split(line, '=');
             param_values[p_val[0]] = p_val[1];
         }
@@ -108,6 +108,22 @@ double param_inter_exchitatory_portion() {
 
 double param_pw() {
     return stod(get_param("pw"));
+}
+
+bool param_spike_trains_file() {
+	return (bool) stoi(get_param("spike_trains_file"));
+}
+
+bool param_firing_rate_file() {
+	return (bool) stoi(get_param("firing_rate_file"));
+}
+
+bool param_adjacency_0_1_file() {
+	return (bool) stoi(get_param("adjacency_0_1_file"));
+}
+
+bool param_adjacency_weights_file() {
+	return (bool) stoi(get_param("adjacency_weights_file"));
 }
 
 string param_output_folder() {

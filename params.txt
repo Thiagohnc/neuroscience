@@ -12,3 +12,10 @@ inter_exchitatory_portion=0.6
 seed=12345
 output_folder=out/teste
 samples=1
+
+# Parameters to decide if file will be generated
+# 1 to generate file and 0 to not generate
+spike_trains_file=1
+firing_rate_file=0
+adjacency_0_1_file=1
+adjacency_weights_file=1
