@@ -17,6 +17,9 @@ def read_params(input_folder):
     with open(f'../{input_folder}/params', 'r') as file:
         lines = file.readlines()
         for line in lines:
-            line = line.strip().split('=')
+            line = line.strip()
+            if line == '' or line[0] == '#':
+                continue
+            line = line.split('=')
             _params[line[0]] = line[1]
     return _params
