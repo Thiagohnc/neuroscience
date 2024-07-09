@@ -1,3 +1,4 @@
+#include "analysis.hpp"
 #include "graph_generator.hpp"
 #include "graph.hpp"
 #include "utils.hpp"
@@ -10,6 +11,7 @@
 using namespace std;
 
 int main(int argc, char *argv[]) {
+	ios_base::sync_with_stdio(false);
     
     if(argc > 1) 
         set_params_path(argv[1]);
@@ -33,8 +35,9 @@ int main(int argc, char *argv[]) {
         vector<vector<double>> firing_rate(N);
 
         for(int i = 0; i < N; i++) {
-            spike_trains[i].reserve(T+1);
-            firing_rate[i].reserve(T+1);
+            spike_trains[i].resize(T+1);
+            firing_rate[i].resize(T+1);
+			progress_bar(i + 1, N, "Reservando espaço para os vetores");
         }
 
         /* Graph Creation */
@@ -60,6 +63,7 @@ int main(int argc, char *argv[]) {
                 firing_rate[u][t] = g.kth_node(u).b();
                 spike_trains[u][t] = 0;
             }
+			progress_bar(u + 1, N, "Inicializando");
         }
         
         double avg_w = 0;
@@ -91,7 +95,7 @@ int main(int argc, char *argv[]) {
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%(T+1)]);
             }
 			
-			progress_bar(t + 1, T + BURN_T, "Simulação");
+			if(t % 10000 == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
         }
         
         /* Creating Output Folder */
@@ -174,6 +178,28 @@ int main(int argc, char *argv[]) {
 			}
 			adj_w_file.close();
 		}
+		
+		/* Output Pearson Correlation */
+		
+		if(param_pearson_file()) {
+			vector<int> temp(T+1);
+			for(int u = 0; u < N; u++) {
+				for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
+				for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];
+				progress_bar(u + 1, N, "Formatando matriz de spike trains");
+			}
+			write_pearson_correlation(spike_trains, output_folder + "/pearson");
+		}
+		
+		/* Clearing Allocated Space */
+		
+		for(int i = 0; i < N; i++) {
+            spike_trains[i].clear();
+            firing_rate[i].clear();
+			progress_bar(i + 1, N, "Liberando espaço dos vetores");
+        }
+		spike_trains.clear();
+		firing_rate.clear();
     }
 
     
