@@ -25,6 +25,7 @@ void read_params() {
     ifstream file(params_path);
     if(file.is_open()) {
         while(getline(file,line)) {
+			line = strip(line);
 			if(line.size() == 0 || line[0] == '#') continue;
             vector<string> p_val = split(line, '=');
             param_values[p_val[0]] = p_val[1];
@@ -124,6 +125,10 @@ bool param_adjacency_0_1_file() {
 
 bool param_adjacency_weights_file() {
 	return (bool) stoi(get_param("adjacency_weights_file"));
+}
+
+bool param_pearson_file() {
+	return (bool) stoi(get_param("pearson_file"));
 }
 
 string param_output_folder() {

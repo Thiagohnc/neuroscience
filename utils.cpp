@@ -140,6 +140,24 @@ void progress_bar(int done, int total, string name) {
 	}
 }
 
+string strip(string s) {
+	int left = 0;
+	for(int i = 0; i < (int)s.size(); i++) {
+		if(isspace(s[i])) left = i + 1;
+		else break;
+	}
+	s.erase(s.begin(), s.begin() + left);
+	
+	int right = s.size();
+	for(int i = s.size() - 1; i >= 0; i--) {
+		if(isspace(s[i])) right = i;
+		else break;
+	}
+	s.erase(s.begin() + right, s.end());
+	
+	return s;
+}
+
 void mkdir_tree(string folder) {
     for(int i = 0; i <= (int) folder.size(); i++)
         if(folder[i] == '/')

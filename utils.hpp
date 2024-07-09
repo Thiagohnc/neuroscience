@@ -21,6 +21,7 @@ std::vector<std::vector<std::string>> string_to_matrix(std::string str);
 double logistic(double x);
 double inverse_logistic(double y);
 void progress_bar(int done, int total, std::string name);
+std::string strip(std::string);
 void mkdir_tree(std::string folder);
 void set_seed(int seed);
 

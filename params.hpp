@@ -27,6 +27,7 @@ bool param_spike_trains_file();
 bool param_firing_rate_file();
 bool param_adjacency_0_1_file();
 bool param_adjacency_weights_file();
+bool param_pearson_file();
 std::string param_output_folder();
 unsigned int param_samples();
 unsigned int param_seed();
