@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
                 for(int tt = max(0, t - 1); tt < t; tt++) {
                     for(int k = 0; k < g.neighbor_quantity(u); k++) {
                         int v = g.kth_neighbor(u,k);
-                        int w = g.kth_weight(u,k);
+                        double w = g.kth_weight(u,k);
                         firing_rate[v][t%(T+1)] += (w * spike_trains[u][tt%(T+1)])/(double)N;
                     }
                 }
