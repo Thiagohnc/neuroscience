@@ -8,8 +8,8 @@
 
 typedef std::chrono::time_point<std::chrono::high_resolution_clock> timepoint;
 
-int rand(int cap);
-std::vector<int> rand_vector(int n, int cap);
+long unsigned int rand(int cap);
+std::vector<long unsigned int> rand_vector(int n, unsigned long int cap);
 double rand01();
 bool coin_flip(double p);
 int mod(int x, int m);
@@ -23,6 +23,6 @@ double inverse_logistic(double y);
 void progress_bar(int done, int total, std::string name);
 std::string strip(std::string);
 void mkdir_tree(std::string folder);
-void set_seed(int seed);
+void set_seed(unsigned long int seed);
 
 #endif

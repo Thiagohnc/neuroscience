@@ -19,12 +19,12 @@ mt19937 twister;
 default_random_engine generator;
 uniform_real_distribution<double> rand_real(0,1);
 
-int rand(int cap) {
+long unsigned int rand(int cap) {
 	return twister() % cap;
 }
 
-vector<int> rand_vector(int n, int cap) {
-    vector<int> v(n);
+vector<long unsigned int> rand_vector(int n, unsigned long int cap) {
+    vector<long unsigned int> v(n);
     for(int i = 0; i < n; i++)
         v[i] = rand(cap);
     return v;
@@ -165,7 +165,7 @@ void mkdir_tree(string folder) {
     mkdir(folder.data(), 0777);
 }
 
-void set_seed(int seed) {
+void set_seed(long unsigned int seed) {
     twister = mt19937{seed};
     generator = default_random_engine(seed);
 }
