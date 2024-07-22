@@ -139,10 +139,10 @@ unsigned int param_samples() {
     return stoi(get_param("samples"));
 }
 
-unsigned int param_seed() {
+unsigned long long int param_seed() {
     static int seed = rd();
     string seed_str = get_param("seed");
-    if(seed_str != "auto") seed = stoi(get_param("seed"));
+    if(seed_str != "auto") seed = stoull(get_param("seed"));
     return seed;
 }
 

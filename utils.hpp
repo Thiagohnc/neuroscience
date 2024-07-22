@@ -23,6 +23,6 @@ double inverse_logistic(double y);
 void progress_bar(int done, int total, std::string name);
 std::string strip(std::string);
 void mkdir_tree(std::string folder);
-void set_seed(int seed);
+void set_seed(unsigned long long int seed);
 
 #endif

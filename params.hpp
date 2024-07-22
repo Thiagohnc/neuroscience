@@ -30,6 +30,6 @@ bool param_adjacency_weights_file();
 bool param_pearson_file();
 std::string param_output_folder();
 unsigned int param_samples();
-unsigned int param_seed();
+unsigned long long int param_seed();
 
 #endif

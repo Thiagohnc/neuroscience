@@ -14,7 +14,7 @@ def read_input(filename, var_type, input_folder, tmax=None):
 
 def read_params(input_folder):
     _params = dict()
-    with open(f'../{input_folder}/params', 'r') as file:
+    with open(f'{input_folder}/params', 'r') as file:
         lines = file.readlines()
         for line in lines:
             line = line.strip()

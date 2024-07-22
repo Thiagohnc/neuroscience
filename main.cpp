@@ -3,12 +3,18 @@
 #include "graph.hpp"
 #include "utils.hpp"
 #include "params.hpp"
+//#include <boost/iostreams/copy.hpp>
+//#include <boost/iostreams/filtering_stream.hpp>
+//#include <boost/iostreams/filter/gzip.hpp>
+//#include <boost/iostreams/filter/zlib.hpp>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <vector>
 #include <sys/stat.h>
 
 using namespace std;
+//namespace io = boost::iostreams;
 
 int main(int argc, char *argv[]) {
 	ios_base::sync_with_stdio(false);
@@ -29,7 +35,24 @@ int main(int argc, char *argv[]) {
     for(int sample = 0; sample < samples; sample++) {
 		cout << "Amostra " << sample + 1 << " de " << samples << ":" << endl;
 		
-        set_seed(samples_seeds[sample]);
+		set_seed(samples_seeds[sample]);
+		
+		/* Creating Output Folder */
+        
+        const string output_folder = param_output_folder() + "/" + to_string(sample + 1);
+        mkdir_tree(output_folder);
+		
+		/* Checking if sample was already calculated */
+		
+		ifstream check_done_file;
+		check_done_file.open(output_folder + "/done");
+		if(check_done_file) {
+			check_done_file.close();
+			cout << "Amostra já calculada" << endl;
+			continue;
+		}
+		
+		/* Allocating Space */
 
         vector<vector<int>> spike_trains(N);
         vector<vector<double>> firing_rate(N);
@@ -98,20 +121,31 @@ int main(int argc, char *argv[]) {
 			if(t % 10000 == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
         }
         
-        /* Creating Output Folder */
-        
-        const string output_folder = param_output_folder() + "/" + to_string(sample + 1);
-        mkdir_tree(output_folder);
-        
         /* Save current parameters in file */
         
         ifstream params_source("params.txt", ios::binary);
         ofstream params_dest(param_output_folder() + "/params", ios::binary);
-        params_dest << params_source.rdbuf();
+		string params_str((istreambuf_iterator<char>(params_source)), istreambuf_iterator<char>());
+		regex match("seed=auto");
+		string repl = "seed=" + to_string(param_seed()) + "(auto)";
+        string params_to_write = regex_replace(params_str, match, repl);
+		params_dest << params_to_write;
         
         /* Output Spike Trains */
         
 		if(param_spike_trains_file()) {
+			//     ofstream spike_trains_file("/spike_trains.gz", ofstream::binary);
+			//     boost::iostreams::filtering_streambuf< boost::iostreams::input> in;
+			//     in.push( boost::iostreams::gzip_compressor());
+			//     stringstream spike_trains_data;
+			
+			// compress
+			//vector<char> packed;
+			//io::filtering_ostream out;
+			//out.push(io::gzip_compressor(io::gzip_params(io::gzip::best_compression)));
+			//out.push(io::back_inserter(packed));
+			//out.write(reinterpret_cast<const char*>(&wdata[0]), wdata.length() * sizeof(wchar_t));
+			//io::close(out);
 			ofstream spike_trains_file(output_folder + "/spike_trains");
 			if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
 			for(int u = 0; u < N; u++) {
@@ -121,6 +155,8 @@ int main(int argc, char *argv[]) {
 				spike_trains_file << '\n';
 			}
 			spike_trains_file.close();
+			//     in.push(spike_trains_data);
+			//     boost::iostreams::copy(in, spike_trains_file);
 		}
 		
 		/* Output Firing Rate */
@@ -190,6 +226,10 @@ int main(int argc, char *argv[]) {
 			}
 			write_pearson_correlation(spike_trains, output_folder + "/pearson");
 		}
+		
+		/* "Done" file to notify that sample was fully calculated */
+		ofstream done_file(output_folder + "/done");
+		done_file.close();
 		
 		/* Clearing Allocated Space */
 		

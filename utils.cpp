@@ -4,6 +4,7 @@
 #include <cassert>
 #include <chrono>
 #include <cmath>
+#include <ctime>
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -165,7 +166,7 @@ void mkdir_tree(string folder) {
     mkdir(folder.data(), 0777);
 }
 
-void set_seed(int seed) {
+void set_seed(unsigned long long int seed) {
     twister = mt19937{seed};
     generator = default_random_engine(seed);
 }
