@@ -30,11 +30,26 @@ int main(int argc, char *argv[]) {
     for(int sample = 0; sample < samples; sample++) {
 		cout << "Amostra " << sample + 1 << " de " << samples << ":" << endl;
 		
-        set_seed(samples_seeds[sample]);
-
+		/* Creating Output Folder */
+        
+        const string output_folder = param_output_folder() + "/" + to_string(sample + 1);
+        mkdir_tree(output_folder);
+		
+		ifstream check_done_file;
+		check_done_file.open(output_folder + "/done");
+		if(check_done_file) {
+			check_done_file.close();
+			cout << "Amostra já calculada" << endl;
+			continue;
+		}
+		
+		/* Allocating Space */
+		
         vector<vector<int>> spike_trains(N);
         vector<vector<double>> firing_rate(N);
-
+		
+        set_seed(samples_seeds[sample]);
+		
         for(int i = 0; i < N; i++) {
             spike_trains[i].resize(T+1);
             firing_rate[i].resize(T+1);
@@ -96,13 +111,8 @@ int main(int argc, char *argv[]) {
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%(T+1)]);
             }
 			
-			if(t % 10000 == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
+			if(t % 1 == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
         }
-        
-        /* Creating Output Folder */
-        
-        const string output_folder = param_output_folder() + "/" + to_string(sample + 1);
-        mkdir_tree(output_folder);
         
         /* Save current parameters in file */
         
@@ -191,6 +201,10 @@ int main(int argc, char *argv[]) {
 			}
 			write_pearson_correlation(spike_trains, output_folder + "/pearson");
 		}
+		
+		/* "Done" file to notify that sample was fully calculated */
+		ofstream done_file(output_folder + "/done");
+		done_file.close();
 		
 		/* Clearing Allocated Space */
 		
