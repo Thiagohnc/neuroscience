@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%(T+1)]);
             }
 			
-			if(t % 1 == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
+			if(t % (T/100) == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
         }
         
         /* Save current parameters in file */
@@ -201,6 +201,18 @@ int main(int argc, char *argv[]) {
 			}
 			write_pearson_correlation(spike_trains, output_folder + "/pearson");
 		}
+		
+		/* Spectral Clustering */
+		
+		string cmd = "./spectral_clustering";
+		cmd += " input_folder=" + output_folder;
+		cmd += " n_clusters=2";
+		cmd += " seed=" + to_string(samples_seeds[sample]);
+		progress_bar(0, 2, "Spectral Clustering");
+		system((cmd + " pot=1" + " filename=spectral_clustering_1").c_str());
+		progress_bar(1, 2, "Spectral Clustering");
+		system((cmd + " pot=2" + " filename=spectral_clustering_2").c_str());
+		progress_bar(2, 2, "Spectral Clustering");
 		
 		/* "Done" file to notify that sample was fully calculated */
 		ofstream done_file(output_folder + "/done");
