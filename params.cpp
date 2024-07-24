@@ -135,6 +135,10 @@ string param_output_folder() {
     return get_param("output_folder");
 }
 
+int param_silent() {
+    return stoi(get_param("silent"));
+}
+
 unsigned int param_samples() {
     return stoi(get_param("samples"));
 }

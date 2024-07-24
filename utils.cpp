@@ -111,6 +111,9 @@ double inverse_logistic(double y) {
 }
 
 void progress_bar(int done, int total, string name) {
+	if(param_silent())
+		return;
+	
 	static timepoint start;
 	static bool started = false;
 	const int bar_size = 50;

@@ -9,6 +9,9 @@
 #include <vector>
 #include <sys/stat.h>
 
+#define PRINT(str) if(!param_silent()) cout << str;
+#define PRINTLN(str) if(!param_silent()) cout << str << endl;
+
 using namespace std;
 
 int main(int argc, char *argv[]) {
@@ -28,7 +31,7 @@ int main(int argc, char *argv[]) {
     const int BURN_T = param_BURN_T();
     
     for(int sample = 0; sample < samples; sample++) {
-		cout << "Amostra " << sample + 1 << " de " << samples << ":" << endl;
+		PRINTLN("Amostra " << sample + 1 << " de " << samples << ":");
 		
 		/* Creating Output Folder */
         
@@ -39,7 +42,7 @@ int main(int argc, char *argv[]) {
 		check_done_file.open(output_folder + "/done");
 		if(check_done_file) {
 			check_done_file.close();
-			cout << "Amostra já calculada" << endl;
+			if(!param_silent()) PRINTLN("Amostra já calculada");
 			continue;
 		}
 		
@@ -124,7 +127,7 @@ int main(int argc, char *argv[]) {
         
 		if(param_spike_trains_file()) {
 			ofstream spike_trains_file(output_folder + "/spike_trains");
-			if(!spike_trains_file.is_open()) {cout << "Unable to open file spike_trains" << '\n'; exit(0);}
+			if(!spike_trains_file.is_open()) {PRINTLN("Unable to open file spike_trains"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
 					spike_trains_file << spike_trains[u][t%(T+1)] << " ";
@@ -138,7 +141,7 @@ int main(int argc, char *argv[]) {
         
 		if(param_firing_rate_file()) {
 			ofstream firing_rate_file(output_folder + "/firing_rate");
-			if(!firing_rate_file.is_open()) {cout << "Unable to open file firing_rate" << '\n'; exit(0);}
+			if(!firing_rate_file.is_open()) {PRINTLN("Unable to open file firing_rate"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
 					firing_rate_file << firing_rate[u][t%(T+1)] << " ";
@@ -152,7 +155,7 @@ int main(int argc, char *argv[]) {
 
 		if(param_adjacency_0_1_file()) {
 			ofstream adj_file(output_folder + "/adjacency_0_1");
-			if(!adj_file.is_open()) {cout << "Unable to open file adjacency_0_1" << '\n'; exit(0);}
+			if(!adj_file.is_open()) {PRINTLN("Unable to open file adjacency_0_1"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int v = 0; v < N; v++) {
 					int connection = -1;
@@ -173,7 +176,7 @@ int main(int argc, char *argv[]) {
 		
 		if(param_adjacency_weights_file()) {
 			ofstream adj_w_file(output_folder + "/adjacency_weights");
-			if(!adj_w_file.is_open()) {cout << "Unable to open file adjacency_weights" << '\n'; exit(0);}
+			if(!adj_w_file.is_open()) {PRINTLN("Unable to open file adjacency_weights"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int v = 0; v < N; v++) {
 					int connection = -1;
