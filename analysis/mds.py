@@ -3,17 +3,7 @@ from sklearn.cluster import KMeans, SpectralClustering
 from matplotlib import pyplot as plt
 import numpy as np
 from math import *
-
-def read_pearson(input_folder):
-    D = []
-    with open(input_folder) as file:
-        lines = file.readlines()
-        for line in lines:
-            line = line.strip().split(' ')
-            D.append([])
-            for val in line:
-                D[-1].append(float(val))
-    return D
+from reader import *
 
 #a, b = 1, 0
 #for i in range(len(D)):
