@@ -114,7 +114,7 @@ int main(int argc, char *argv[]) {
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%(T+1)]);
             }
 			
-			if(t % (T/100) == 0 || t == T + BURN_T + 1) progress_bar(t + 1, T + BURN_T + 1, "Simulação");
+			if(t % (T/100) == 0 || t == T + BURN_T) progress_bar(t, T + BURN_T, "Simulação");
         }
         
         /* Save current parameters in file */
@@ -126,35 +126,46 @@ int main(int argc, char *argv[]) {
         /* Output Spike Trains */
         
 		if(param_spike_trains_file()) {
-			ofstream spike_trains_file(output_folder + "/spike_trains");
+			string path = output_folder + "/spike_trains";
+			ofstream spike_trains_file(path);
 			if(!spike_trains_file.is_open()) {PRINTLN("Unable to open file spike_trains"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
 					spike_trains_file << spike_trains[u][t%(T+1)] << " ";
 				}
 				spike_trains_file << '\n';
+				progress_bar(u + 1, N, "Output: Spike Trains");
 			}
 			spike_trains_file.close();
+			
+			if(param_spike_trains_file() == 2)
+				zip_and_remove(path);
 		}
 		
 		/* Output Firing Rate */
         
 		if(param_firing_rate_file()) {
-			ofstream firing_rate_file(output_folder + "/firing_rate");
+			string path = output_folder + "/firing_rate";
+			ofstream firing_rate_file(path);
 			if(!firing_rate_file.is_open()) {PRINTLN("Unable to open file firing_rate"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
 					firing_rate_file << firing_rate[u][t%(T+1)] << " ";
 				}
 				firing_rate_file << '\n';
+				progress_bar(u + 1, N, "Output: Firing Rate");
 			}
 			firing_rate_file.close();
+			
+			if(param_firing_rate_file() == 2)
+				zip_and_remove(path);
 		}
         
         /* Output Adjacency 0/1 List */
 
 		if(param_adjacency_0_1_file()) {
-			ofstream adj_file(output_folder + "/adjacency_0_1");
+			string path = output_folder + "/adjacency_0_1";
+			ofstream adj_file(path);
 			if(!adj_file.is_open()) {PRINTLN("Unable to open file adjacency_0_1"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int v = 0; v < N; v++) {
@@ -167,15 +178,20 @@ int main(int argc, char *argv[]) {
 					}
 					adj_file << (connection == -1 ? 0 : 1) << " ";
 				}
+				progress_bar(u + 1, N, "Output: Adjacency 0/1");
 				adj_file << '\n';
 			}
 			adj_file.close();
+			
+			if(param_adjacency_0_1_file() == 2)
+				zip_and_remove(path);
         }
 		
 		/* Output Adjacency Weights List */
 		
 		if(param_adjacency_weights_file()) {
-			ofstream adj_w_file(output_folder + "/adjacency_weights");
+			string path = output_folder + "/adjacency_weights";
+			ofstream adj_w_file(path);
 			if(!adj_w_file.is_open()) {PRINTLN("Unable to open file adjacency_weights"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int v = 0; v < N; v++) {
@@ -189,20 +205,28 @@ int main(int argc, char *argv[]) {
 					adj_w_file << (connection == -1 ? 0 : g.kth_weight(u,connection)) << " ";
 				}
 				adj_w_file << '\n';
+				progress_bar(u + 1, N, "Output: Adjacency Weights");
 			}
 			adj_w_file.close();
+			
+			if(param_adjacency_weights_file() == 2)
+				zip_and_remove(path);
 		}
 		
 		/* Output Pearson Correlation */
 		
 		if(param_pearson_file()) {
+			string path = output_folder + "/pearson";
 			vector<int> temp(T+1);
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
 				for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];
 				progress_bar(u + 1, N, "Formatando matriz de spike trains");
 			}
-			write_pearson_correlation(spike_trains, output_folder + "/pearson");
+			write_pearson_correlation(spike_trains, path);
+			
+			if(param_pearson_file() == 2)
+				zip_and_remove(path);
 		}
 		
 		/* Spectral Clustering */

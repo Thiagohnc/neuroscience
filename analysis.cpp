@@ -31,14 +31,14 @@ vector<vector<double>> pearson_all_pairs(vector<vector<int>> &spikes, int delay)
 			dens[i] += (spikes[i][t] - means[i]) * (spikes[i][t] - means[i]);
 			delayed_dens[i] += (spikes[i][t + delay] - means[i]) * (spikes[i][t + delay] - means[i]);
 		}
-		progress_bar(i + 1, (int)spikes.size(), "Pré-cálculo de médias e denominadores");
+		progress_bar(i + 1, (int)spikes.size(), "Output: Pearson - Pré-processamento");
 	}
 	
 	for(int i = 0; i < (int)spikes.size(); i++) {
 		for(int j = 0; j < (int)spikes.size(); j++) {
 			corr[i].push_back(pearson(i, j, spikes, means, dens, delayed_dens, delay));
 		}
-		progress_bar(i + 1, (int)spikes.size(), "Cálculo de Pearson");
+		progress_bar(i + 1, (int)spikes.size(), "Output: Pearson - Cálculo");
 	}
 	
 	return corr;

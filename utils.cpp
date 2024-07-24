@@ -168,6 +168,13 @@ void mkdir_tree(string folder) {
     mkdir(folder.data(), 0777);
 }
 
+void zip_and_remove(string path) {
+	progress_bar(0, 1, "Compactando Arquivo");
+	system(("tar -czf " + path + ".tar.gz " + path).c_str());
+	system(("rm " + path).c_str());
+	progress_bar(1, 1, "Compactando Arquivo");
+}
+
 void set_seed(long unsigned int seed) {
     twister = mt19937{seed};
     generator = default_random_engine(seed);

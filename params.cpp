@@ -111,24 +111,24 @@ double param_pw() {
     return stod(get_param("pw"));
 }
 
-bool param_spike_trains_file() {
-	return (bool) stoi(get_param("spike_trains_file"));
+int param_spike_trains_file() {
+	return (int) stoi(get_param("spike_trains_file"));
 }
 
-bool param_firing_rate_file() {
-	return (bool) stoi(get_param("firing_rate_file"));
+int param_firing_rate_file() {
+	return (int) stoi(get_param("firing_rate_file"));
 }
 
-bool param_adjacency_0_1_file() {
-	return (bool) stoi(get_param("adjacency_0_1_file"));
+int param_adjacency_0_1_file() {
+	return (int) stoi(get_param("adjacency_0_1_file"));
 }
 
-bool param_adjacency_weights_file() {
-	return (bool) stoi(get_param("adjacency_weights_file"));
+int param_adjacency_weights_file() {
+	return (int) stoi(get_param("adjacency_weights_file"));
 }
 
-bool param_pearson_file() {
-	return (bool) stoi(get_param("pearson_file"));
+int param_pearson_file() {
+	return (int) stoi(get_param("pearson_file"));
 }
 
 string param_output_folder() {
