@@ -230,6 +230,16 @@ int main(int argc, char *argv[]) {
 				zip_and_remove(path);
 		}
 		
+		/* Clearing Allocated Space */
+		
+		for(int i = 0; i < N; i++) {
+            spike_trains[i].clear();
+            firing_rate[i].clear();
+			progress_bar(i + 1, N, "Liberando espaço dos vetores");
+        }
+		spike_trains.clear();
+		firing_rate.clear();
+		
 		/* Spectral Clustering */
 		
 		string cmd = "./spectral_clustering";
@@ -245,16 +255,6 @@ int main(int argc, char *argv[]) {
 		/* "Done" file to notify that sample was fully calculated */
 		ofstream done_file(output_folder + "/done");
 		done_file.close();
-		
-		/* Clearing Allocated Space */
-		
-		for(int i = 0; i < N; i++) {
-            spike_trains[i].clear();
-            firing_rate[i].clear();
-			progress_bar(i + 1, N, "Liberando espaço dos vetores");
-        }
-		spike_trains.clear();
-		firing_rate.clear();
     }
 
     
