@@ -45,7 +45,7 @@ int mod(int x, int m) {
     return x % m;
 }
 
-double mean(vector<short int> &v) {
+double mean(vector<bool> &v) {
 	long long int sum = 0;
 	for(int i = 0; i < (int)v.size(); i++) {
 		sum += v[i];
@@ -61,8 +61,8 @@ vector<int> vector_to_ints(vector<string> v) {
     return ans;
 }
 
-vector<short int> vector_to_short_ints(vector<string> v) {
-    vector<short int> ans;
+vector<bool> vector_to_bools(vector<string> v) {
+    vector<bool> ans;
     for(int i = 0; i < (int)v.size(); i++) {
         ans.push_back(stoi(v[i]));
     }

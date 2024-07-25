@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
 		
 		/* Allocating Space */
 		
-        vector<vector<short int>> spike_trains(N);
+        vector<vector<bool>> spike_trains(N);
         vector<vector<double>> firing_rate(N);
 		
         set_seed(samples_seeds[sample]);
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
         
         for(int u = 0; u < N; u++) {
             for(int t = 0; t <= T ; t++)
-                spike_trains[u][t] = 0;
+                spike_trains[u][t] = false;
 			firing_rate[u][0] = firing_rate[u][1] = g.kth_node(u).b();
 			progress_bar(u + 1, N, "Inicializando");
         }
@@ -130,7 +130,7 @@ int main(int argc, char *argv[]) {
 			if(!spike_trains_file.is_open()) {PRINTLN("Unable to open file spike_trains"); exit(0);}
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t < (T + BURN_T); t++) {
-					spike_trains_file << spike_trains[u][t%(T+1)] << " ";
+					spike_trains_file << (spike_trains[u][t%(T+1)] ? 1 : 0) << " ";
 				}
 				spike_trains_file << '\n';
 				progress_bar(u + 1, N, "Output: Spike Trains");
@@ -218,7 +218,7 @@ int main(int argc, char *argv[]) {
 		
 		if(param_pearson_file()) {
 			string path = output_folder + "/pearson";
-			vector<int> temp(T+1);
+			vector<bool> temp(T+1);
 			for(int u = 0; u < N; u++) {
 				for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
 				for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];
