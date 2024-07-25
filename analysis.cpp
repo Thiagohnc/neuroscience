@@ -8,7 +8,7 @@
 
 using namespace std;
 
-double pearson(int a, int b, vector<vector<int>> &spikes, vector<double> &means, vector<double> &dens, vector<double> &delayed_dens, int delay) {
+double pearson(int a, int b, vector<vector<short int>> &spikes, vector<double> &means, vector<double> &dens, vector<double> &delayed_dens, int delay) {
 	double num = 0;
 	
 	for(int t = 0; t < (int)spikes[a].size() - delay; t++) {
@@ -18,7 +18,7 @@ double pearson(int a, int b, vector<vector<int>> &spikes, vector<double> &means,
 	return num / sqrt(dens[a] * delayed_dens[b]);
 }
 
-vector<vector<double>> pearson_all_pairs(vector<vector<int>> &spikes, int delay) {
+vector<vector<double>> pearson_all_pairs(vector<vector<short int>> &spikes, int delay) {
 	vector<double> means(spikes.size());
 	vector<double> dens(spikes.size());
 	vector<double> delayed_dens(spikes.size());
@@ -44,8 +44,8 @@ vector<vector<double>> pearson_all_pairs(vector<vector<int>> &spikes, int delay)
 	return corr;
 }
 
-vector<vector<int>> read_spike_trains_file(string file_path) {
-	vector<vector<int>> spikes;
+vector<vector<short int>> read_spike_trains_file(string file_path) {
+	vector<vector<short int>> spikes;
 	int file_size = filesystem::file_size(filesystem::path(file_path));
 	int readed = 0;
     ifstream file(file_path);
@@ -53,7 +53,7 @@ vector<vector<int>> read_spike_trains_file(string file_path) {
 	
     if(file.is_open()) {
         while(getline(file,line)) {
-			spikes.push_back(vector_to_ints(split(line, ' ')));
+			spikes.push_back(vector_to_short_ints(split(line, ' ')));
 			readed += line.size() + 1;
 			progress_bar(readed, file_size, "Leitura do input (spike trains)");
         }
@@ -62,7 +62,7 @@ vector<vector<int>> read_spike_trains_file(string file_path) {
 	return spikes;
 }
 
-void write_pearson_correlation(vector<vector<int>> &spikes, string file_path) {
+void write_pearson_correlation(vector<vector<short int>> &spikes, string file_path) {
 	ofstream pearson_file(file_path);
 	
 	vector<vector<double>> corr = pearson_all_pairs(spikes, 1);

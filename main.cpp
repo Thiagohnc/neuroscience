@@ -48,14 +48,14 @@ int main(int argc, char *argv[]) {
 		
 		/* Allocating Space */
 		
-        vector<vector<int>> spike_trains(N);
+        vector<vector<short int>> spike_trains(N);
         vector<vector<double>> firing_rate(N);
 		
         set_seed(samples_seeds[sample]);
 		
         for(int i = 0; i < N; i++) {
             spike_trains[i].resize(T+1);
-            firing_rate[i].resize(T+1);
+            firing_rate[i].resize(2);
 			progress_bar(i + 1, N, "Reservando espaço para os vetores");
         }
 
@@ -78,10 +78,9 @@ int main(int argc, char *argv[]) {
         /* Initialization */
         
         for(int u = 0; u < N; u++) {
-            for(int t = 0; t <= T ; t++) {
-                firing_rate[u][t] = g.kth_node(u).b();
+            for(int t = 0; t <= T ; t++)
                 spike_trains[u][t] = 0;
-            }
+			firing_rate[u][0] = firing_rate[u][1] = g.kth_node(u).b();
 			progress_bar(u + 1, N, "Inicializando");
         }
         
@@ -95,7 +94,7 @@ int main(int argc, char *argv[]) {
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
-                firing_rate[u][t%(T+1)] = param_mu();
+                firing_rate[u][t%2] = param_mu();
             }
             
             /* Activation by neighbors */
@@ -104,14 +103,14 @@ int main(int argc, char *argv[]) {
                     for(int k = 0; k < g.neighbor_quantity(u); k++) {
                         int v = g.kth_neighbor(u,k);
                         double w = g.kth_weight(u,k);
-                        firing_rate[v][t%(T+1)] += (w * spike_trains[u][tt%(T+1)])/(double)N;
+                        firing_rate[v][t%2] += (w * spike_trains[u][tt%(T+1)])/(double)N;
                     }
                 }
             }
             
             /* Firing */
             for(int u = 0; u < N; u++) {
-                spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%(T+1)]);
+                spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%2]);
             }
 			
 			if(t % (T/100) == 0 || t == T + BURN_T) progress_bar(t, T + BURN_T, "Simulação");
@@ -145,20 +144,22 @@ int main(int argc, char *argv[]) {
 		/* Output Firing Rate */
         
 		if(param_firing_rate_file()) {
-			string path = output_folder + "/firing_rate";
-			ofstream firing_rate_file(path);
-			if(!firing_rate_file.is_open()) {PRINTLN("Unable to open file firing_rate"); exit(0);}
-			for(int u = 0; u < N; u++) {
-				for(int t = BURN_T; t < (T + BURN_T); t++) {
-					firing_rate_file << firing_rate[u][t%(T+1)] << " ";
-				}
-				firing_rate_file << '\n';
-				progress_bar(u + 1, N, "Output: Firing Rate");
-			}
-			firing_rate_file.close();
-			
-			if(param_firing_rate_file() == 2)
-				zip_and_remove(path);
+			//string path = output_folder + "/firing_rate";
+			//ofstream firing_rate_file(path);
+			//if(!firing_rate_file.is_open()) {PRINTLN("Unable to open file firing_rate"); exit(0);}
+			//for(int u = 0; u < N; u++) {
+			//	for(int t = BURN_T; t < (T + BURN_T); t++) {
+			//		firing_rate_file << firing_rate[u][t%(T+1)] << " ";
+			//	}
+			//	firing_rate_file << '\n';
+			//	progress_bar(u + 1, N, "Output: Firing Rate");
+			//}
+			//firing_rate_file.close();
+			//
+			//if(param_firing_rate_file() == 2)
+			//	zip_and_remove(path);
+			//
+			PRINTLN("Firing_rate file generation is currently unavailable");
 		}
         
         /* Output Adjacency 0/1 List */
