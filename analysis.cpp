@@ -1,7 +1,6 @@
 #include "analysis.hpp"
 #include "utils.hpp"
 #include <cmath>
-#include <filesystem>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -46,19 +45,18 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes, int delay
 
 vector<vector<bool>> read_spike_trains_file(string file_path) {
 	vector<vector<bool>> spikes;
-	int file_size = filesystem::file_size(filesystem::path(file_path));
 	int readed = 0;
     ifstream file(file_path);
 	string line;
 	
+	progress_bar(0, 1, "Leitura do input (spike trains)");
     if(file.is_open()) {
         while(getline(file,line)) {
 			spikes.push_back(vector_to_bools(split(line, ' ')));
 			readed += line.size() + 1;
-			progress_bar(readed, file_size, "Leitura do input (spike trains)");
         }
     }
-	
+	progress_bar(1, 1, "Leitura do input (spike trains)");
 	return spikes;
 }
 
