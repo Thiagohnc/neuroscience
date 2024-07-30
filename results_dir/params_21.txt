@@ -1,0 +1,25 @@
+p=0.05
+q=0.05
+N=300
+T=1000000
+BURN_T=10000000
+alpha_ewma=1
+mu=0.01
+mu_in=1.3
+mu_out=1.2
+intra_exchitatory_portion=0.6
+inter_exchitatory_portion=0.6
+seed=auto
+output_folder=result_21
+samples=20
+
+# Parameters to decide if file will be generated
+# 1 to generate file and 0 to not generate
+spike_trains_file=0
+firing_rate_file=0
+adjacency_0_1_file=0
+adjacency_weights_file=0
+pearson_file=1
+
+# Options
+silent=0

@@ -1,5 +1,6 @@
 *.o
 *.txt
+!results_dir/*.txt
 *.sh
 main
 out/*
