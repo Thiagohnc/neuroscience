@@ -29,6 +29,7 @@ int main(int argc, char *argv[]) {
     const int N = param_N();
     const int T = param_T();
     const int BURN_T = param_BURN_T();
+	string path;
     
     for(int sample = 0; sample < samples; sample++) {
 		PRINTLN("Amostra " << sample + 1 << " de " << samples << ":");
@@ -125,7 +126,7 @@ int main(int argc, char *argv[]) {
         /* Output Spike Trains */
         
 		if(param_spike_trains_file()) {
-			string path = output_folder + "/spike_trains";
+			path = output_folder + "/spike_trains";
 			ofstream spike_trains_file(path);
 			if(!spike_trains_file.is_open()) {PRINTLN("Unable to open file spike_trains"); exit(0);}
 			for(int u = 0; u < N; u++) {
@@ -144,7 +145,7 @@ int main(int argc, char *argv[]) {
 		/* Output Firing Rate */
         
 		if(param_firing_rate_file()) {
-			//string path = output_folder + "/firing_rate";
+			//path = output_folder + "/firing_rate";
 			//ofstream firing_rate_file(path);
 			//if(!firing_rate_file.is_open()) {PRINTLN("Unable to open file firing_rate"); exit(0);}
 			//for(int u = 0; u < N; u++) {
@@ -165,7 +166,7 @@ int main(int argc, char *argv[]) {
         /* Output Adjacency 0/1 List */
 
 		if(param_adjacency_0_1_file()) {
-			string path = output_folder + "/adjacency_0_1";
+			path = output_folder + "/adjacency_0_1";
 			ofstream adj_file(path);
 			if(!adj_file.is_open()) {PRINTLN("Unable to open file adjacency_0_1"); exit(0);}
 			for(int u = 0; u < N; u++) {
@@ -191,7 +192,7 @@ int main(int argc, char *argv[]) {
 		/* Output Adjacency Weights List */
 		
 		if(param_adjacency_weights_file()) {
-			string path = output_folder + "/adjacency_weights";
+			path = output_folder + "/adjacency_weights";
 			ofstream adj_w_file(path);
 			if(!adj_w_file.is_open()) {PRINTLN("Unable to open file adjacency_weights"); exit(0);}
 			for(int u = 0; u < N; u++) {
@@ -215,21 +216,15 @@ int main(int argc, char *argv[]) {
 		}
 		
 		/* Output Pearson Correlation */
-		
-		if(param_pearson_file()) {
-			string path = output_folder + "/pearson";
-			vector<bool> temp(T+1);
-			for(int u = 0; u < N; u++) {
-				for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
-				for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];
-				progress_bar(u + 1, N, "Formatando matriz de spike trains");
-			}
-			write_pearson_correlation(spike_trains, path);
-			
-			if(param_pearson_file() == 2)
-				zip_and_remove(path);
+		path = output_folder + "/pearson";
+		vector<bool> temp(T+1);
+		for(int u = 0; u < N; u++) {
+			for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
+			for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];
+			progress_bar(u + 1, N, "Formatando matriz de spike trains");
 		}
-		
+		write_pearson_correlation(spike_trains, path);
+	
 		/* Clearing Allocated Space */
 		
 		for(int i = 0; i < N; i++) {
@@ -251,6 +246,13 @@ int main(int argc, char *argv[]) {
 		progress_bar(1, 2, "Spectral Clustering");
 		system((cmd + " pot=2" + " filename=spectral_clustering_2").c_str());
 		progress_bar(2, 2, "Spectral Clustering");
+		
+		/* Removing Pearson File if needed */
+		path = output_folder + "/pearson";
+		if(param_pearson_file() == 0)
+			system(("rm " + path).c_str());
+		if(param_pearson_file() == 2)
+			zip_and_remove(path);
 		
 		/* "Done" file to notify that sample was fully calculated */
 		ofstream done_file(output_folder + "/done");
