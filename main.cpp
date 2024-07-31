@@ -242,7 +242,7 @@ int main(int argc, char *argv[]) {
 		
 		/* Spectral Clustering */
 		
-		string cmd = "./spectral_clustering";
+		string cmd = "python3 analysis/spectral_clustering.py";
 		cmd += " input_folder=" + output_folder;
 		cmd += " n_clusters=2";
 		cmd += " seed=" + to_string(samples_seeds[sample]);

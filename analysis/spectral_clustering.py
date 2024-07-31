@@ -24,7 +24,7 @@ for i in range(len(sim)):
 clustering = SpectralClustering(n_clusters=int(args['n_clusters']),
                                 assign_labels='cluster_qr',
                                 affinity='precomputed',
-                                random_state=int(args['seed'])).fit(np.array(sim))
+                                random_state=int(args['seed'])).fit(np.array(sim, dtype=np.float64))
 
 with open(args['input_folder'] + '/' + args['filename'], 'w') as file:
     for i in range(len(sim)):
