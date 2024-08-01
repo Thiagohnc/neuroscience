@@ -50,13 +50,12 @@ int main(int argc, char *argv[]) {
 		/* Allocating Space */
 		
         vector<vector<bool>> spike_trains(N);
-        vector<vector<double>> firing_rate(N);
+        vector<double> firing_rate(N);
 		
         set_seed(samples_seeds[sample]);
 		
         for(int i = 0; i < N; i++) {
             spike_trains[i].resize(T+1);
-            firing_rate[i].resize(2);
 			progress_bar(i + 1, N, "Reservando espaço para os vetores");
         }
 
@@ -81,7 +80,7 @@ int main(int argc, char *argv[]) {
         for(int u = 0; u < N; u++) {
             for(int t = 0; t <= T ; t++)
                 spike_trains[u][t] = false;
-			firing_rate[u][0] = firing_rate[u][1] = g.kth_node(u).b();
+			firing_rate[u] = param_mu();
 			progress_bar(u + 1, N, "Inicializando");
         }
         
@@ -95,23 +94,25 @@ int main(int argc, char *argv[]) {
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
-                firing_rate[u][t%2] = param_mu();
+                firing_rate[u] = param_mu();
             }
             
             /* Activation by neighbors */
             for(int u = 0; u < N; u++) {
                 for(int tt = max(0, t - 1); tt < t; tt++) {
-                    for(int k = 0; k < g.neighbor_quantity(u); k++) {
-                        int v = g.kth_neighbor(u,k);
-                        double w = g.kth_weight(u,k);
-                        firing_rate[v][t%2] += (w * spike_trains[u][tt%(T+1)])/(double)N;
-                    }
+					if(spike_trains[u][tt%(T+1)]) {
+						for(int k = 0; k < g.neighbor_quantity(u); k++) {
+							int v = g.kth_neighbor(u,k);
+							double w = g.kth_weight(u,k);
+							firing_rate[v] += (w * spike_trains[u][tt%(T+1)])/(double)N;
+						}
+					}
                 }
             }
             
             /* Firing */
             for(int u = 0; u < N; u++) {
-                spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u][t%2]);
+                spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u]);
             }
 			
 			if(t % (T/100) == 0 || t == T + BURN_T) progress_bar(t, T + BURN_T, "Simulação");
@@ -229,7 +230,6 @@ int main(int argc, char *argv[]) {
 		
 		for(int i = 0; i < N; i++) {
             spike_trains[i].clear();
-            firing_rate[i].clear();
 			progress_bar(i + 1, N, "Liberando espaço dos vetores");
         }
 		spike_trains.clear();
