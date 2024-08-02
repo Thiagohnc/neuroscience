@@ -1,25 +1,26 @@
 p=0.05
 q=0.05
 N=300
-T=1000000
-BURN_T=1000000
+T=10000000
+BURN_T=100000
 alpha_ewma=1
 mu=0.01
-mu_in=5
-mu_out=1
+mu_in=0.3
+mu_out=0.1
 intra_exchitatory_portion=0.6
 inter_exchitatory_portion=0.6
 seed=12345
-output_folder=out/b
+output_folder=teste_inout_pequenos
 samples=1
 
 # Parameters to decide if file will be generated
 # 1 to generate file and 0 to not generate
 spike_trains_file=1
-firing_rate_file=1
-adjacency_0_1_file=1
-adjacency_weights_file=1
-pearson_file=1
+firing_rate_file=0
+adjacency_0_1_file=0
+adjacency_weights_file=0
+pearson_file=0
 
 # Options
 silent=0
+zip_results=0

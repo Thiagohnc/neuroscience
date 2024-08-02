@@ -139,6 +139,10 @@ int param_silent() {
     return stoi(get_param("silent"));
 }
 
+int param_zip_results() {
+    return stoi(get_param("zip_results"));
+}
+
 unsigned int param_samples() {
     return stoi(get_param("samples"));
 }

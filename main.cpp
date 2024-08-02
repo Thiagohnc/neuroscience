@@ -260,9 +260,10 @@ int main(int argc, char *argv[]) {
     }
 	
 	/* Zip folder and remove */
-	system(("tar -czf " + param_output_folder() + ".tar.gz " + param_output_folder()).c_str());
-	system(("rm -r " + param_output_folder()).c_str());
+	if(param_zip_results()) {
+		system(("tar -czf " + param_output_folder() + ".tar.gz " + param_output_folder()).c_str());
+		system(("rm -r " + param_output_folder()).c_str());
+	}
 
-    
     return 0;
 }
