@@ -3,9 +3,9 @@
 
 #include <string>
 
-void set_params_path(std::string _params_path);
+void set_params_path(const std::string &_params_path);
 void read_params();
-std::string get_param(std::string param_name);
+std::string get_param(const std::string &param_name);
 double param_p();
 double param_q();
 double param_mu();

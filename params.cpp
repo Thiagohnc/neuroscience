@@ -16,7 +16,7 @@ string params_path;
 map<string,string> param_values;
 std::random_device rd;
 
-void set_params_path(string _params_path) {
+void set_params_path(const string &_params_path) {
     params_path = _params_path;
 }
 
@@ -33,7 +33,7 @@ void read_params() {
     }
 }
 
-string get_param(string param_name) {
+string get_param(const string &param_name) {
     if(param_values.find(param_name) == param_values.end()) {
         read_params();
         if(param_values.find(param_name) == param_values.end()) {
