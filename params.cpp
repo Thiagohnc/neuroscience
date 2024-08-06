@@ -131,6 +131,10 @@ int param_pearson_file() {
 	return (int) stoi(get_param("pearson_file"));
 }
 
+int param_spike_average_file() {
+	return (int) stoi(get_param("spike_average_file"));
+}
+
 string param_output_folder() {
     return get_param("output_folder");
 }

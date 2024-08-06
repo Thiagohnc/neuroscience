@@ -143,6 +143,26 @@ int main(int argc, char *argv[]) {
 				zip_and_remove(path);
 		}
 		
+		/* Output Spike Average */
+		
+		if(param_spike_average_file()) {
+			path = output_folder + "/spike_average";
+			ofstream spike_average_file(path);
+			if(!spike_average_file.is_open()) {PRINTLN("Unable to open file spike_average"); exit(0);}
+			for(int u = 0; u < N; u++) {
+				int total = 0;
+				for(int t = BURN_T; t < (T + BURN_T); t++) {
+					total += spike_trains[u][t%(T+1)];
+				}
+				spike_average_file << (double)total/T << '\n';
+				progress_bar(u + 1, N, "Output: Spike Average");
+			}
+			spike_average_file.close();
+			
+			if(param_spike_average_file() == 2)
+				zip_and_remove(path);
+		}
+		
 		/* Output Firing Rate */
         
 		if(param_firing_rate_file()) {
