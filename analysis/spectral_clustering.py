@@ -19,7 +19,7 @@ sim = read_pearson(args['input_folder'])
 
 for i in range(len(sim)):
     for j in range(i + 1):
-        sim[i][j] = sim[j][i] = (abs(sim[i][j] + abs(sim[i][j])) / 2) ** int(args['pot'])
+        sim[i][j] = sim[j][i] = (abs(sim[i][j]) + abs(sim[j][i]) / 2) ** int(args['pot'])
 
 clustering = SpectralClustering(n_clusters=int(args['n_clusters']),
                                 assign_labels='cluster_qr',
