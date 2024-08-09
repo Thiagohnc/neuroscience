@@ -25,6 +25,7 @@ void progress_bar(int done, int total, std::string name);
 std::string strip(std::string);
 void mkdir_tree(std::string folder);
 void zip_and_remove(std::string path);
+void exec_shell(std::string cmd);
 void set_seed(unsigned long int seed);
 
 #endif

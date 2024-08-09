@@ -178,9 +178,16 @@ void mkdir_tree(string folder) {
 
 void zip_and_remove(string path) {
 	progress_bar(0, 1, "Compactando Arquivo");
-	system(("tar -czf " + path + ".tar.gz " + path).c_str());
-	system(("rm " + path).c_str());
+	exec_shell("tar -czf " + path + ".tar.gz " + path);
+	exec_shell("rm " + path);
 	progress_bar(1, 1, "Compactando Arquivo");
+}
+
+void exec_shell(string cmd) {
+	int status = system(cmd.c_str());
+	if(WEXITSTATUS(status) != 0) {
+		cerr << "Command " << cmd << " returned " << WEXITSTATUS(status) << endl;
+	}
 }
 
 void set_seed(long unsigned int seed) {

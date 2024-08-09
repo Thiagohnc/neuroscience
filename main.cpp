@@ -7,7 +7,6 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-#include <sys/stat.h>
 
 #define PRINT(str) if(!param_silent()) cout << str;
 #define PRINTLN(str) if(!param_silent()) cout << str << endl;
@@ -17,9 +16,11 @@ using namespace std;
 int main(int argc, char *argv[]) {
 	ios_base::sync_with_stdio(false);
     
-	string param_filename = "params.txt";
-    if(argc > 1) 
-        param_filename = argv[1];
+	string params_filename = "params.txt";
+    if(argc > 1) {
+        params_filename = argv[1];
+	}
+	set_params_path(params_filename);
     
     const int samples = param_samples();
     // Initial seed to set a different and random seed for each sample
@@ -119,7 +120,7 @@ int main(int argc, char *argv[]) {
         
         /* Save current parameters in file */
         
-        ifstream params_source(param_filename, ios::binary);
+        ifstream params_source(params_filename, ios::binary);
         ofstream params_dest(param_output_folder() + "/params", ios::binary);
         params_dest << params_source.rdbuf();
         
@@ -261,15 +262,15 @@ int main(int argc, char *argv[]) {
 		cmd += " n_clusters=2";
 		cmd += " seed=" + to_string(samples_seeds[sample]);
 		progress_bar(0, 2, "Spectral Clustering");
-		system((cmd + " pot=1" + " filename=spectral_clustering_1").c_str());
+		exec_shell(cmd + " pot=1" + " filename=spectral_clustering_1");
 		progress_bar(1, 2, "Spectral Clustering");
-		system((cmd + " pot=2" + " filename=spectral_clustering_2").c_str());
+		exec_shell(cmd + " pot=2" + " filename=spectral_clustering_2");
 		progress_bar(2, 2, "Spectral Clustering");
 		
 		/* Removing Pearson File if needed */
 		path = output_folder + "/pearson";
 		if(param_pearson_file() == 0)
-			system(("rm " + path).c_str());
+			exec_shell("rm " + path);
 		if(param_pearson_file() == 2)
 			zip_and_remove(path);
 		
@@ -280,8 +281,8 @@ int main(int argc, char *argv[]) {
 	
 	/* Zip folder and remove */
 	if(param_zip_results()) {
-		system(("tar -czf " + param_output_folder() + ".tar.gz " + param_output_folder()).c_str());
-		system(("rm -r " + param_output_folder()).c_str());
+		exec_shell("tar -czf " + param_output_folder() + ".tar.gz " + param_output_folder());
+		exec_shell("rm -r " + param_output_folder());
 	}
 
     return 0;
