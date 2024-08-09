@@ -6,6 +6,8 @@
 #include <climits>
 #include <fstream>
 #include <iostream>
+#include <regex>
+#include <sstream>
 #include <vector>
 
 #define PRINT(str) if(!param_silent()) cout << str;
@@ -120,9 +122,11 @@ int main(int argc, char *argv[]) {
         
         /* Save current parameters in file */
         
-        ifstream params_source(params_filename, ios::binary);
-        ofstream params_dest(param_output_folder() + "/params", ios::binary);
-        params_dest << params_source.rdbuf();
+        ifstream params_source(params_filename);
+		stringstream params_text;
+		params_text << params_source.rdbuf();
+        ofstream params_dest(param_output_folder() + "/params");
+        params_dest << regex_replace(params_text.str(), regex("seed=auto"), "seed=" + to_string(param_seed()));
         
         /* Output Spike Trains */
         
