@@ -17,10 +17,9 @@ using namespace std;
 int main(int argc, char *argv[]) {
 	ios_base::sync_with_stdio(false);
     
+	string param_filename = "params.txt";
     if(argc > 1) 
-        set_params_path(argv[1]);
-    else
-        set_params_path("params.txt");
+        param_filename = argv[1];
     
     const int samples = param_samples();
     // Initial seed to set a different and random seed for each sample
@@ -120,7 +119,7 @@ int main(int argc, char *argv[]) {
         
         /* Save current parameters in file */
         
-        ifstream params_source("params.txt", ios::binary);
+        ifstream params_source(param_filename, ios::binary);
         ofstream params_dest(param_output_folder() + "/params", ios::binary);
         params_dest << params_source.rdbuf();
         
