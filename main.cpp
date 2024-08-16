@@ -170,21 +170,6 @@ int main(int argc, char *argv[]) {
 		/* Output Firing Rate */
         
 		if(param_firing_rate_file()) {
-			//path = output_folder + "/firing_rate";
-			//ofstream firing_rate_file(path);
-			//if(!firing_rate_file.is_open()) {PRINTLN("Unable to open file firing_rate"); exit(0);}
-			//for(int u = 0; u < N; u++) {
-			//	for(int t = BURN_T; t < (T + BURN_T); t++) {
-			//		firing_rate_file << firing_rate[u][t%(T+1)] << " ";
-			//	}
-			//	firing_rate_file << '\n';
-			//	progress_bar(u + 1, N, "Output: Firing Rate");
-			//}
-			//firing_rate_file.close();
-			//
-			//if(param_firing_rate_file() == 2)
-			//	zip_and_remove(path);
-			//
 			PRINTLN("Firing_rate file generation is currently unavailable");
 		}
         
