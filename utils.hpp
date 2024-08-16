@@ -1,8 +1,12 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
+#define PRINT(str) if(!param_silent()) cout << str;
+#define PRINTLN(str) if(!param_silent()) cout << str << endl;
+
 #include <algorithm>
 #include <chrono>
+#include <iostream>
 #include <string>
 #include <vector>
 
