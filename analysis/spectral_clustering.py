@@ -22,7 +22,7 @@ for i in range(len(sim)):
         sim[i][j] = sim[j][i] = (abs(sim[i][j]) + abs(sim[j][i]) / 2) ** int(args['pot'])
 
 clustering = SpectralClustering(n_clusters=int(args['n_clusters']),
-                                assign_labels='cluster_qr',
+                                assign_labels='kmeans',
                                 affinity='precomputed',
                                 random_state=int(args['seed'])).fit(np.array(sim, dtype=np.float64))
 
