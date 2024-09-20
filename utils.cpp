@@ -45,7 +45,7 @@ int mod(int x, int m) {
     return x % m;
 }
 
-double mean(vector<bool> &v) {
+double mean(const vector<bool> &v) {
 	long long int sum = 0;
 	for(int i = 0; i < (int)v.size(); i++) {
 		sum += v[i];

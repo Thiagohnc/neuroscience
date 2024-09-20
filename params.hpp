@@ -29,6 +29,7 @@ int param_adjacency_0_1_file();
 int param_adjacency_weights_file();
 int param_pearson_file();
 int param_spike_average_file();
+int param_spike_variance_file();
 std::string param_output_folder();
 int param_silent();
 int param_zip_results();

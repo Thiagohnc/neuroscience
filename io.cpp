@@ -47,6 +47,27 @@ void output_spike_average(const vector<vector<bool>> &spike_trains, const string
         zip_and_remove(path);
 }
 
+void output_spike_variance(const vector<vector<bool>> &spike_trains, const string &output_folder) {
+    int N = param_N();
+    int BURN_T = param_BURN_T(), T = param_T();
+    string path = output_folder + "/spike_variance";
+    ofstream spike_variance_file(path);
+    if(!spike_variance_file.is_open()) {PRINTLN("Unable to open file spike_variance"); exit(0);}
+    for(int u = 0; u < N; u++) {
+        double variance_num = 0;
+        const double spike_avg = mean(spike_trains[u]);
+        for(int t = BURN_T; t < (T + BURN_T); t++) {
+            variance_num += (spike_trains[u][t%(T+1)] - spike_avg) * (spike_trains[u][t%(T+1)] - spike_avg);
+        }
+        spike_variance_file << (double)variance_num/T << '\n';
+        progress_bar(u + 1, N, "Output: Spike Variance");
+    }
+    spike_variance_file.close();
+    
+    if(param_spike_variance_file() == 2)
+        zip_and_remove(path);
+}
+
 void output_adjacency_0_1(Graph &g, const string &output_folder) {
     int N = param_N();
     string path = output_folder + "/adjacency_0_1";

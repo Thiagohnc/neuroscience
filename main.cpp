@@ -130,6 +130,7 @@ int main(int argc, char *argv[]) {
         
 		if(param_spike_trains_file())		output_spike_trains(spike_trains, output_folder);
 		if(param_spike_average_file()) 		output_spike_average(spike_trains, output_folder);
+		if(param_spike_variance_file()) 	output_spike_variance(spike_trains, output_folder);
 		if(param_firing_rate_file())		PRINTLN("Firing_rate file generation is currently unavailable");
 		if(param_adjacency_0_1_file())		output_adjacency_0_1(g, output_folder);
 		if(param_adjacency_weights_file())	output_adjacency_weights(g, output_folder);

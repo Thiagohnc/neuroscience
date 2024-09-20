@@ -17,7 +17,7 @@ std::vector<long unsigned int> rand_vector(int n, unsigned long int cap);
 double rand01();
 bool coin_flip(double p);
 int mod(int x, int m);
-double mean(std::vector<bool> &v);
+double mean(const std::vector<bool> &v);
 std::vector<int> vector_to_ints(std::vector<std::string> v);
 std::vector<bool> vector_to_bools(std::vector<std::string> v);
 std::vector<std::vector<int>> matrix_to_ints(std::vector<std::vector<std::string>> v);

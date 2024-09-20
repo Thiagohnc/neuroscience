@@ -135,6 +135,10 @@ int param_spike_average_file() {
 	return (int) stoi(get_param("spike_average_file"));
 }
 
+int param_spike_variance_file() {
+	return (int) stoi(get_param("spike_variance_file"));
+}
+
 string param_output_folder() {
     return get_param("output_folder");
 }
