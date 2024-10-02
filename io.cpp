@@ -8,71 +8,86 @@
 
 using namespace std;
 
+namespace {
+    class GenericIO {
+    private:
+        const string filename;
+        const string filepath;
+        ofstream filestream;
+    public:
+        GenericIO(const string &_filename, const string &_output_folder) :
+        filename(_filename), filepath(_output_folder + '/' + _filename) {
+            filestream = ofstream(filepath);
+            if(!filestream.is_open()) {PRINTLN("Unable to open file " + filename); exit(1);}
+        }
+
+        ~GenericIO() {
+            if(filestream.is_open()) filestream.close();
+        }
+
+        template<typename T>
+        GenericIO& operator<<(T x) {
+            filestream << x;
+            return *this;
+        }
+
+        void next(int current, int total) {
+            filestream << '\n';
+            progress_bar(current + 1, total, "Output: " + filename);
+        }
+
+        void finish() {
+            filestream.close();
+            if(stoi(get_param(filename + "_file")) == 2)
+                zip_and_remove(filepath);
+        }
+    };
+}
+
 void output_spike_trains(const vector<vector<bool>> &spike_trains, const string &output_folder) {
     int N = param_N();
     int BURN_T = param_BURN_T(), T = param_T();
-    string path = output_folder + "/spike_trains";
-    ofstream spike_trains_file(path);
-    if(!spike_trains_file.is_open()) {PRINTLN("Unable to open file spike_trains"); exit(0);}
+    GenericIO io("spike_trains", output_folder);
     for(int u = 0; u < N; u++) {
-        for(int t = BURN_T; t < (T + BURN_T); t++) {
-            spike_trains_file << (spike_trains[u][t%(T+1)] ? 1 : 0) << " ";
-        }
-        spike_trains_file << '\n';
-        progress_bar(u + 1, N, "Output: Spike Trains");
+        for(int t = BURN_T; t < (T + BURN_T); t++)
+            io << (spike_trains[u][t%(T+1)] ? 1 : 0) << " ";
+        io.next(u, N);
     }
-    spike_trains_file.close();
-    
-    if(param_spike_trains_file() == 2)
-        zip_and_remove(path);
+    io.finish();
 }
 
 void output_spike_average(const vector<vector<bool>> &spike_trains, const string &output_folder) {
     int N = param_N();
     int BURN_T = param_BURN_T(), T = param_T();
-    string path = output_folder + "/spike_average";
-    ofstream spike_average_file(path);
-    if(!spike_average_file.is_open()) {PRINTLN("Unable to open file spike_average"); exit(0);}
+    GenericIO io("spike_average", output_folder);
     for(int u = 0; u < N; u++) {
         int total = 0;
-        for(int t = BURN_T; t < (T + BURN_T); t++) {
+        for(int t = BURN_T; t < (T + BURN_T); t++)
             total += spike_trains[u][t%(T+1)];
-        }
-        spike_average_file << (double)total/T << '\n';
-        progress_bar(u + 1, N, "Output: Spike Average");
+        io << (double)total/T;
+        io.next(u, N);
     }
-    spike_average_file.close();
-    
-    if(param_spike_average_file() == 2)
-        zip_and_remove(path);
+    io.finish();
 }
 
 void output_spike_variance(const vector<vector<bool>> &spike_trains, const string &output_folder) {
     int N = param_N();
     int BURN_T = param_BURN_T(), T = param_T();
-    string path = output_folder + "/spike_variance";
-    ofstream spike_variance_file(path);
-    if(!spike_variance_file.is_open()) {PRINTLN("Unable to open file spike_variance"); exit(0);}
+    GenericIO io("spike_variance", output_folder);
     for(int u = 0; u < N; u++) {
         double variance_num = 0;
         const double spike_avg = mean(spike_trains[u]);
-        for(int t = BURN_T; t < (T + BURN_T); t++) {
+        for(int t = BURN_T; t < (T + BURN_T); t++) 
             variance_num += (spike_trains[u][t%(T+1)] - spike_avg) * (spike_trains[u][t%(T+1)] - spike_avg);
-        }
-        spike_variance_file << (double)variance_num/T << '\n';
-        progress_bar(u + 1, N, "Output: Spike Variance");
+        io << (double)variance_num/T;
+        io.next(u, N);
     }
-    spike_variance_file.close();
-    
-    if(param_spike_variance_file() == 2)
-        zip_and_remove(path);
+    io.finish();
 }
 
 void output_adjacency_0_1(Graph &g, const string &output_folder) {
     int N = param_N();
-    string path = output_folder + "/adjacency_0_1";
-    ofstream adj_file(path);
-    if(!adj_file.is_open()) {PRINTLN("Unable to open file adjacency_0_1"); exit(0);}
+    GenericIO io("adjacency_0_1", output_folder);
     for(int u = 0; u < N; u++) {
         for(int v = 0; v < N; v++) {
             int connection = -1;
@@ -82,22 +97,16 @@ void output_adjacency_0_1(Graph &g, const string &output_folder) {
                     break;
                 }
             }
-            adj_file << (connection == -1 ? 0 : 1) << " ";
+            io << (connection == -1 ? 0 : 1) << " ";
         }
-        progress_bar(u + 1, N, "Output: Adjacency 0/1");
-        adj_file << '\n';
+        io.next(u, N);
     }
-    adj_file.close();
-    
-    if(param_adjacency_0_1_file() == 2)
-        zip_and_remove(path);
+    io.finish();
 }
 
 void output_adjacency_weights(Graph &g, const string &output_folder) {
     int N = param_N();
-    string path = output_folder + "/adjacency_weights";
-    ofstream adj_w_file(path);
-    if(!adj_w_file.is_open()) {PRINTLN("Unable to open file adjacency_weights"); exit(0);}
+    GenericIO io("adjacency_weights", output_folder);
     for(int u = 0; u < N; u++) {
         for(int v = 0; v < N; v++) {
             int connection = -1;
@@ -107,13 +116,9 @@ void output_adjacency_weights(Graph &g, const string &output_folder) {
                     break;
                 }
             }
-            adj_w_file << (connection == -1 ? 0 : g.kth_weight(u,connection)) << " ";
+            io << (connection == -1 ? 0 : g.kth_weight(u,connection)) << " ";
         }
-        adj_w_file << '\n';
-        progress_bar(u + 1, N, "Output: Adjacency Weights");
+        io.next(u, N);
     }
-    adj_w_file.close();
-    
-    if(param_adjacency_weights_file() == 2)
-        zip_and_remove(path);
+    io.finish();
 }
