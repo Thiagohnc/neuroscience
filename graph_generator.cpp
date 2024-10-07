@@ -13,7 +13,6 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
     std::default_random_engine generator(param_seed());
     double intra_exc_portion = param_intra_exchitatory_portion();
     double inter_exc_portion = param_inter_exchitatory_portion();
-    double b = inverse_logistic(param_mu());
     
     int N = 0;
     
@@ -57,14 +56,5 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
         }
     }
 
-    //exit(0);
-
-    //std::cout << "d" << std::endl;
-    for(int i = 0; i < N; i++) {
-        g.kth_node(i).set_b(b);
-    }
-    //std::cout << "e" << std::endl;
-    
-    //g.sort_all_edges();
     return g;
 }

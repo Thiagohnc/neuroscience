@@ -10,9 +10,7 @@ private:
 public:
     Node(double b);
     Node();
-    double b();
     double W();
-    void set_b(double b);
     void add_weight(double b);
 };
 

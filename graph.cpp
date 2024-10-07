@@ -14,16 +14,8 @@ Node::Node(double b) {
 
 Node::Node() {}
 
-double Node::b() {
-    return auto_activation_rate;
-}
-
 double Node::W() {
     return exit_weight;
-}
-
-void Node::set_b(double b) {
-    auto_activation_rate = b;
 }
 
 void Node::add_weight(double w) {
