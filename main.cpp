@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     set_seed(param_seed());
     const vector<long unsigned int> samples_seeds = rand_vector(samples, ULONG_MAX);
     const int N = param_N();
-    const int T = param_T();
+	const int T = param_T();
     const int BURN_T = param_BURN_T();
 	string path;
     
@@ -46,7 +46,28 @@ int main(int argc, char *argv[]) {
 			if(!param_silent()) PRINTLN("Amostra já calculada");
 			continue;
 		}
-		
+
+		/* Graph Creation */
+        
+        Graph g;
+        
+		if(param_graph() == "SBM") {
+			vector<vector<int> > groups;
+			groups.resize(2);
+			
+			for(int i = 0; i < N/2; i++) groups[0].push_back(i);
+			for(int i = N/2; i < N; i++) groups[1].push_back(i);
+			
+			vector<vector<double> > p;
+			p.push_back(vector<double>({param_p(), param_q()}));
+			p.push_back(vector<double>({param_q(), param_p()}));
+			
+			g = stochastic_block_model(groups, p);
+		}
+		else {
+			g = graph_from_file(param_graph());
+		}
+
 		/* Allocating Space */
 		
         vector<vector<bool>> spike_trains(N);
@@ -59,21 +80,7 @@ int main(int argc, char *argv[]) {
 			progress_bar(i + 1, N, "Reservando espaço para os vetores");
         }
 
-        /* Graph Creation */
-        
-        Graph g;
-        
-        vector<vector<int> > groups;
-        groups.resize(2);
-        
-        for(int i = 0; i < N/2; i++) groups[0].push_back(i);
-        for(int i = N/2; i < N; i++) groups[1].push_back(i);
-        
-        vector<vector<double> > p;
-        p.push_back(vector<double>({param_p(), param_q()}));
-        p.push_back(vector<double>({param_q(), param_p()}));
-        
-        g = stochastic_block_model(groups, p);
+
         
         /* Initialization */
         
@@ -127,7 +134,7 @@ int main(int argc, char *argv[]) {
         params_dest << regex_replace(params_text.str(), regex("seed=auto"), "seed=" + to_string(param_seed()));
         
         /* Outputs */
-        
+
 		if(param_spike_trains_file())		output_spike_trains(spike_trains, output_folder);
 		if(param_spike_average_file()) 		output_spike_average(spike_trains, output_folder);
 		if(param_spike_variance_file()) 	output_spike_variance(spike_trains, output_folder);

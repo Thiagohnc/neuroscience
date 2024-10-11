@@ -6,6 +6,7 @@
 void set_params_path(const std::string &_params_path);
 void read_params();
 std::string get_param(const std::string &param_name);
+std::string param_graph();
 double param_p();
 double param_q();
 double param_mu();

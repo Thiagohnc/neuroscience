@@ -43,6 +43,10 @@ string get_param(const string &param_name) {
     return param_values[param_name];
 }
 
+string param_graph() {
+    return get_param("graph");
+}
+
 double param_p() {
     return stod(get_param("p"));
 }

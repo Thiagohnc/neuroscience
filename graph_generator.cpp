@@ -4,13 +4,17 @@
 #include "params.hpp"
 #include <cassert>
 #include <cmath>
+#include <fstream>
 #include <random>
+#include <string>
 #include <vector>
 
 #include <iostream>
 
-Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector<std::vector<double> > &p) {
-    std::default_random_engine generator(param_seed());
+using namespace std;
+
+Graph stochastic_block_model(vector<vector<int> > &groups, vector<vector<double> > &p) {
+    default_random_engine generator(param_seed());
     double intra_exc_portion = param_intra_exchitatory_portion();
     double inter_exc_portion = param_inter_exchitatory_portion();
     
@@ -53,6 +57,38 @@ Graph stochastic_block_model(std::vector<std::vector<int> > &groups, std::vector
                     }
                 }
             }
+        }
+    }
+
+    return g;
+}
+
+Graph graph_from_file(string filepath) {
+    vector<vector<double>> adj_matrix;
+    ifstream file(filepath);
+    if(file.is_open()) {
+        string line;
+        int u = 0;
+        while(getline(file, line)) {
+            line = strip(line);
+            if(line.size() == 0 || line[0] == '#') continue;
+            adj_matrix.push_back(vector_to_doubles(split(line, ' ')));
+            u++;
+        }
+    }
+
+    const int N = param_N();
+
+    assert((int) adj_matrix.size() == N);
+    for(int i = 0; i < (int) adj_matrix.size(); i++)
+        assert((int) adj_matrix[i].size() == N);
+
+    Graph g(N);
+
+    for(int u = 0; u < N; u++) {
+        for(int v = 0; v < N; v++) {
+            if(adj_matrix[u][v] != 0)
+                g.add_edge(u, v, adj_matrix[u][v]);
         }
     }
 

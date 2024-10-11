@@ -61,6 +61,14 @@ vector<int> vector_to_ints(vector<string> v) {
     return ans;
 }
 
+vector<double> vector_to_doubles(vector<string> v) {
+    vector<double> ans;
+    for(int i = 0; i < (int)v.size(); i++) {
+        ans.push_back(stod(v[i]));
+    }
+    return ans;
+}
+
 vector<bool> vector_to_bools(vector<string> v) {
     vector<bool> ans;
     for(int i = 0; i < (int)v.size(); i++) {

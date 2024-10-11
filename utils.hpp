@@ -19,6 +19,7 @@ bool coin_flip(double p);
 int mod(int x, int m);
 double mean(const std::vector<bool> &v);
 std::vector<int> vector_to_ints(std::vector<std::string> v);
+std::vector<double> vector_to_doubles(std::vector<std::string> v);
 std::vector<bool> vector_to_bools(std::vector<std::string> v);
 std::vector<std::vector<int>> matrix_to_ints(std::vector<std::vector<std::string>> v);
 std::vector<std::string> split(std::string str, char delim);
@@ -30,6 +31,6 @@ std::string strip(std::string);
 void mkdir_tree(std::string folder);
 void zip_and_remove(std::string path);
 void exec_shell(std::string cmd);
-void set_seed(unsigned long int seed);
+void set_seed(long unsigned int seed);
 
 #endif
