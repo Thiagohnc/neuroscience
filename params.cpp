@@ -79,6 +79,10 @@ int param_BURN_T() {
     return stoi(get_param("BURN_T"));
 }
 
+int param_delay() {
+    return stoi(get_param("delay"));
+}
+
 double param_alpha_ewma() {
     return stod(get_param("alpha_ewma"));
 }

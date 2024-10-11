@@ -15,6 +15,7 @@ double param_mu_out();
 int param_N();
 int param_T();
 int param_BURN_T();
+int param_delay();
 double param_alpha_ewma();
 double param_w_intra_mean();
 double param_w_intra_std();

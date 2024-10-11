@@ -1,4 +1,5 @@
 #include "analysis.hpp"
+#include "params.hpp"
 #include "utils.hpp"
 #include <cmath>
 #include <fstream>
@@ -7,7 +8,9 @@
 
 using namespace std;
 
-double pearson(int a, int b, vector<vector<bool>> &spikes, vector<double> &means, vector<double> &dens, vector<double> &delayed_dens, int delay) {
+double pearson(int a, int b, vector<vector<bool>> &spikes, vector<double> &means, vector<double> &dens, vector<double> &delayed_dens) {
+	const int delay = param_delay();
+	
 	double num = 0;
 	
 	for(int t = 0; t < (int)spikes[a].size() - delay; t++) {
@@ -17,7 +20,9 @@ double pearson(int a, int b, vector<vector<bool>> &spikes, vector<double> &means
 	return num / sqrt(dens[a] * delayed_dens[b]);
 }
 
-vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes, int delay) {
+vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
+	const int delay = param_delay();
+	
 	vector<double> means(spikes.size());
 	vector<double> dens(spikes.size());
 	vector<double> delayed_dens(spikes.size());
@@ -35,7 +40,7 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes, int delay
 	
 	for(int i = 0; i < (int)spikes.size(); i++) {
 		for(int j = 0; j < (int)spikes.size(); j++) {
-			corr[i].push_back(pearson(i, j, spikes, means, dens, delayed_dens, delay));
+			corr[i].push_back(pearson(i, j, spikes, means, dens, delayed_dens));
 		}
 		progress_bar(i + 1, (int)spikes.size(), "Output: Pearson - Cálculo");
 	}
@@ -63,7 +68,7 @@ vector<vector<bool>> read_spike_trains_file(string file_path) {
 void write_pearson_correlation(vector<vector<bool>> &spikes, string file_path) {
 	ofstream pearson_file(file_path);
 	
-	vector<vector<double>> corr = pearson_all_pairs(spikes, 1);
+	vector<vector<double>> corr = pearson_all_pairs(spikes);
 	for(int i = 0; i < (int)corr.size(); i++) {
 		for(int j = 0; j < (int)corr.size(); j++) {
 			pearson_file << corr[i][j] << " ";

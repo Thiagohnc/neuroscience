@@ -1,21 +1,24 @@
-# Weights must be specified in the file
-# Options are "SBM" or name of the graph's file
+# Graph structure
+# Options are "SBM" or name of the graph's file (weights must be specified in the file)
 graph=grafo4.txt
 
+# General Parameters
+N=4
+T=10000000
+BURN_T=100000
+seed=auto
+output_folder=test
+samples=1
+delay=0
+
+# Parameters for random graphs
 p=0.05
 q=0.05
-N=4
-T=1000000000
-BURN_T=100000
-alpha_ewma=1
 mu=0.25
 mu_in=5
 mu_out=2
 intra_exchitatory_portion=0.6
 inter_exchitatory_portion=0.6
-seed=4090893189
-output_folder=teste_grafo4_T1kkk
-samples=1
 
 # Parameters to decide if file will be generated
 # 1 to generate file and 0 to not generate
@@ -30,3 +33,6 @@ pearson_file=1
 # Options
 silent=0
 zip_results=0
+
+# Deprecated
+alpha_ewma=1
