@@ -1,6 +1,6 @@
 # Graph structure
 # Options are "SBM" or name of the graph's file (weights must be specified in the file)
-graph=grafo4.txt
+graph=SBM
 
 # General Parameters
 N=4
@@ -19,6 +19,7 @@ mu_in=5
 mu_out=2
 intra_exchitatory_portion=0.6
 inter_exchitatory_portion=0.6
+should_be_strongly_connected=0
 
 # Parameters to decide if file will be generated
 # 1 to generate file and 0 to not generate

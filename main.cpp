@@ -62,7 +62,10 @@ int main(int argc, char *argv[]) {
 			p.push_back(vector<double>({param_p(), param_q()}));
 			p.push_back(vector<double>({param_q(), param_p()}));
 			
-			g = stochastic_block_model(groups, p);
+			if(param_should_be_strongly_connected())
+				g = sc_stochastic_block_model(groups, p);
+			else
+				g = stochastic_block_model(groups, p);
 		}
 		else {
 			g = graph_from_file(param_graph());

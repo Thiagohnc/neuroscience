@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <iostream>
+#include <stdexcept>
 
 using namespace std;
 
@@ -62,6 +63,16 @@ Graph stochastic_block_model(vector<vector<int> > &groups, vector<vector<double>
 
     return g;
 }
+
+Graph sc_stochastic_block_model(vector<vector<int> > &groups, vector<vector<double> > &p, int max_tries) {
+    for(int i = 0; i < max_tries; i++) {
+        Graph g = stochastic_block_model(groups, p);
+        if(strongly_connected(g))
+            return g;
+        PRINTLN("Generated graph was not strongly connected");
+    }
+    throw runtime_error("could not generate a strongly connected graph");
+} 
 
 Graph graph_from_file(string filepath) {
     vector<vector<double>> adj_matrix;

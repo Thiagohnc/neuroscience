@@ -115,6 +115,10 @@ double param_inter_exchitatory_portion() {
     return stod(get_param("inter_exchitatory_portion"));
 }
 
+int param_should_be_strongly_connected() {
+    return stod(get_param("should_be_strongly_connected"));
+}
+
 double param_pw() {
     return stod(get_param("pw"));
 }
