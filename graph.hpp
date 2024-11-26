@@ -3,17 +3,6 @@
 
 #include <vector>
 
-class Node {
-private:
-    double auto_activation_rate;
-    double exit_weight;
-public:
-    Node(double b);
-    Node();
-    double W();
-    void add_weight(double b);
-};
-
 class Edge {
 private:
     int destiny;
@@ -29,7 +18,6 @@ public:
 class Graph {
 private:
     std::vector<std::vector<Edge> > neighbors;
-    std::vector<Node> nodes;
 public:
     Graph(int n);
     Graph();
@@ -37,7 +25,6 @@ public:
     int neighbor_quantity(int v);
     int kth_neighbor(int v, int k);
     double kth_weight(int v, int k);
-    Node& kth_node(int k);
 };
 
 #endif

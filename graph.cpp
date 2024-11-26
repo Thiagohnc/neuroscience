@@ -5,23 +5,6 @@
 
 #include <iostream>
 
-/* Node class */
-
-Node::Node(double b) {
-    auto_activation_rate = b;
-    exit_weight = 0;
-}
-
-Node::Node() {}
-
-double Node::W() {
-    return exit_weight;
-}
-
-void Node::add_weight(double w) {
-    exit_weight += w;
-}
-
 /* Edge class */
 
 Edge::Edge(int d, double w) {
@@ -48,14 +31,12 @@ double Edge::w() {
 
 Graph::Graph(int n) {
     neighbors.resize(n);
-    nodes.resize(n);
 }
 
 Graph::Graph() {}
 
 void Graph::add_edge(int o, int d, double w) {
     neighbors[o].push_back(Edge(d, w));
-    kth_node(o).add_weight(w);
 }
 
 int Graph::neighbor_quantity(int v) {
@@ -70,8 +51,4 @@ int Graph::kth_neighbor(int v, int k) {
 double Graph::kth_weight(int v, int k) {
     assert(k <= neighbor_quantity(v));
     return neighbors[v][k].w();
-}
-
-Node& Graph::kth_node(int k) {
-    return nodes[k];
 }

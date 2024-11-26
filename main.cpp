@@ -91,11 +91,6 @@ int main(int argc, char *argv[]) {
 			progress_bar(u + 1, N, "Inicializando");
         }
         
-        double avg_w = 0;
-        for(int u = 0; u < N; u++) {
-            avg_w += (g.kth_node(u).W()) / N;
-        }
-        
         /* Simulation */
 		
         for(int t = 0; t <= (T + BURN_T); t++) {
