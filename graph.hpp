@@ -11,8 +11,8 @@ public:
     Edge(int d, double w);
     Edge();
     bool operator < (const Edge &other) const;
-    int d();
-    double w();
+    int d() const;
+    double w() const;
 };
 
 class Graph {
@@ -22,9 +22,12 @@ public:
     Graph(int n);
     Graph();
     void add_edge(int o, int d, double w);
-    int neighbor_quantity(int v);
-    int kth_neighbor(int v, int k);
-    double kth_weight(int v, int k);
+    int neighbor_quantity(int v) const;
+    int kth_neighbor(int v, int k) const;
+    double kth_weight(int v, int k) const;
+    Graph reversed_graph();
 };
+
+bool strongly_connected(Graph &g);
 
 #endif
