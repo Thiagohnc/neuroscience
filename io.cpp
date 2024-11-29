@@ -45,7 +45,7 @@ namespace {
 }
 
 void output_spike_trains(const vector<vector<bool>> &spike_trains, const string &output_folder) {
-    int N = param_N();
+    int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("spike_trains", output_folder);
     for(int u = 0; u < N; u++) {
@@ -57,7 +57,7 @@ void output_spike_trains(const vector<vector<bool>> &spike_trains, const string 
 }
 
 void output_spike_average(const vector<vector<bool>> &spike_trains, const string &output_folder) {
-    int N = param_N();
+    int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("spike_average", output_folder);
     for(int u = 0; u < N; u++) {
@@ -71,7 +71,7 @@ void output_spike_average(const vector<vector<bool>> &spike_trains, const string
 }
 
 void output_spike_variance(const vector<vector<bool>> &spike_trains, const string &output_folder) {
-    int N = param_N();
+    int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("spike_variance", output_folder);
     for(int u = 0; u < N; u++) {
@@ -85,8 +85,8 @@ void output_spike_variance(const vector<vector<bool>> &spike_trains, const strin
     io.finish();
 }
 
-void output_adjacency_0_1(Graph &g, const string &output_folder) {
-    int N = param_N();
+void output_adjacency_0_1(const Graph &g, const string &output_folder) {
+    int N = g.N();
     GenericIO io("adjacency_0_1", output_folder);
     for(int u = 0; u < N; u++) {
         for(int v = 0; v < N; v++) {
@@ -104,8 +104,8 @@ void output_adjacency_0_1(Graph &g, const string &output_folder) {
     io.finish();
 }
 
-void output_adjacency_weights(Graph &g, const string &output_folder) {
-    int N = param_N();
+void output_adjacency_weights(const Graph &g, const string &output_folder) {
+    int N = g.N();
     GenericIO io("adjacency_weights", output_folder);
     for(int u = 0; u < N; u++) {
         for(int v = 0; v < N; v++) {

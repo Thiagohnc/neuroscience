@@ -32,7 +32,7 @@ double Edge::w() const {
 
 /* Graph class */
 
-Graph::Graph(int n) {
+Graph::Graph(int n) : node_quantity(n) {
     neighbors.resize(n);
 }
 
@@ -40,6 +40,10 @@ Graph::Graph() {}
 
 void Graph::add_edge(int o, int d, double w) {
     neighbors[o].push_back(Edge(d, w));
+}
+
+int Graph::N() const {
+    return node_quantity;
 }
 
 int Graph::neighbor_quantity(int v) const {
@@ -56,8 +60,8 @@ double Graph::kth_weight(int v, int k) const {
     return neighbors[v][k].w();
 }
 
-Graph Graph::reversed_graph() {
-    const int N = param_N();
+Graph Graph::reversed_graph() const {
+    const int N = this->N();
     Graph rev(N);
     for(int u = 0; u < N; u++) {
         for(int k = 0; k < neighbor_quantity(u); k++) {
@@ -84,8 +88,8 @@ bool all_true(vector<bool> &v) {
     return all_of(v.begin(), v.end(), [] (bool val) {return val;});
 }
 
-bool strongly_connected(Graph &g) {
-    const int N = param_N();
+bool strongly_connected(const Graph &g) {
+    const int N = g.N();
 
     vector<bool> mrk(N, false);
     vector<bool> rev_mrk(N, false);

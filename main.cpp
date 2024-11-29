@@ -26,7 +26,6 @@ int main(int argc, char *argv[]) {
     // Initial seed to set a different and random seed for each sample
     set_seed(param_seed());
     const vector<long unsigned int> samples_seeds = rand_vector(samples, ULONG_MAX);
-    const int N = param_N();
 	const int T = param_T();
     const int BURN_T = param_BURN_T();
 	string path;
@@ -54,6 +53,7 @@ int main(int argc, char *argv[]) {
 		if(param_graph() == "SBM") {
 			vector<vector<int> > groups;
 			groups.resize(2);
+			int N = param_N();
 			
 			for(int i = 0; i < N/2; i++) groups[0].push_back(i);
 			for(int i = N/2; i < N; i++) groups[1].push_back(i);
@@ -70,6 +70,8 @@ int main(int argc, char *argv[]) {
 		else {
 			g = graph_from_file(param_graph());
 		}
+
+		const int N = g.N();
 
 		/* Allocating Space */
 		

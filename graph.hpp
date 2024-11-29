@@ -18,16 +18,18 @@ public:
 class Graph {
 private:
     std::vector<std::vector<Edge> > neighbors;
+    int node_quantity;
 public:
     Graph(int n);
     Graph();
     void add_edge(int o, int d, double w);
+    int N() const;
     int neighbor_quantity(int v) const;
     int kth_neighbor(int v, int k) const;
     double kth_weight(int v, int k) const;
-    Graph reversed_graph();
+    Graph reversed_graph() const;
 };
 
-bool strongly_connected(Graph &g);
+bool strongly_connected(const Graph &g);
 
 #endif

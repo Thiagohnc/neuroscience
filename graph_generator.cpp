@@ -88,9 +88,8 @@ Graph graph_from_file(string filepath) {
         }
     }
 
-    const int N = param_N();
+    const int N = (int) adj_matrix.size();
 
-    assert((int) adj_matrix.size() == N);
     for(int i = 0; i < (int) adj_matrix.size(); i++)
         assert((int) adj_matrix[i].size() == N);
 
