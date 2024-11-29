@@ -67,8 +67,11 @@ double param_mu_out() {
     return stod(get_param("mu_out"));
 }
 
-int param_N() {
-    return stoi(get_param("N"));
+vector<int> param_group_n() {
+    string str_param = get_param("group_n");
+    if(str_param.front() != '[' and str_param.back() != ']')
+        throw invalid_argument("Param group_n should be given as list, e.g. [150,150] for  groups of 150 nodes");
+    return vector_to_ints(split(str_param.substr(1, str_param.size() - 2), ','));
 }
 
 int param_T() {

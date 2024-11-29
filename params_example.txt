@@ -11,7 +11,7 @@ samples=<number of samples>
 delay=<how much a time series is shifted to compare with other (integer)>
 
 # Parameters for random graphs (probabilities should be between 0.0 and 1.0)
-N=<number of nodes>
+group_n=<list of number of nodes in each community, e.g. [150,150]>
 p=<edge probability of vertices in same community>
 q=<edge probability of vertices in different communities>
 mu=<auto activation probability>

@@ -52,12 +52,17 @@ int main(int argc, char *argv[]) {
         
 		if(param_graph() == "SBM") {
 			vector<vector<int> > groups;
-			groups.resize(2);
-			int N = param_N();
+			vector<int> group_n = param_group_n();
+			groups.resize(group_n.size());
 			
-			for(int i = 0; i < N/2; i++) groups[0].push_back(i);
-			for(int i = N/2; i < N; i++) groups[1].push_back(i);
-			
+			if(group_n.size() != 2)
+				throw invalid_argument("Cannot use more or less than 2 groups");
+
+			int u = 0;
+			for(int i = 0; i < (int) groups.size(); i++)
+				for(int k = 0; k < group_n[i]; k++)
+					groups[i].push_back(u++);
+
 			vector<vector<double> > p;
 			p.push_back(vector<double>({param_p(), param_q()}));
 			p.push_back(vector<double>({param_q(), param_p()}));

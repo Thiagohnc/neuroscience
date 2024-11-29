@@ -2,6 +2,7 @@
 #define PARAMS_HPP
 
 #include <string>
+#include <vector>
 
 void set_params_path(const std::string &_params_path);
 void read_params();
@@ -12,7 +13,7 @@ double param_q();
 double param_mu();
 double param_mu_in();
 double param_mu_out();
-int param_N();
+std::vector<int> param_group_n();
 int param_T();
 int param_BURN_T();
 int param_delay();
