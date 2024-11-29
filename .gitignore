@@ -6,4 +6,5 @@ main
 out/*
 !**/.gitkeep
 **/.idea/*
+**/.vscode/*
 **/__pycache__/
