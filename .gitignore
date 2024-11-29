@@ -3,6 +3,6 @@
 *.sh
 main
 out/*
-!out/.gitkeep
-*/.idea/*
+!**/.gitkeep
+**/.idea/*
 **/__pycache__/
