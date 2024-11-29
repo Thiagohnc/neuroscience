@@ -1,0 +1,37 @@
+# Graph structure
+# Options are "SBM" or name of the graph's file (weights must be specified in the file)
+graph=<"SBM" or path to a file with adjacency weights matrix>
+
+# General Parameters
+N=<number of nodes>
+T=<time units for simulation>
+BURN_T=<burned time units before simulation>
+seed=<integer number or "auto" for random seed>
+output_folder=<relative path>
+samples=<number of samples>
+delay=<how much a time series is shifted to compare with other (integer)>
+
+# Parameters for random graphs (probabilities should be between 0.0 and 1.0)
+p=<edge probability of vertices in same community>
+q=<edge probability of vertices in different communities>
+mu=<auto activation probability>
+mu_in=<absolute weight of edges inside communities>
+mu_out=<absolute weight of edges between different communities>
+intra_exchitatory_portion=<probability of edge inside communities being exchitatory>
+inter_exchitatory_portion=<probability of edge between different communities being exchitatory>
+should_be_strongly_connected=<0 is default, 1 to regenerate graph until it is strongly connected>
+
+# Parameters to decide if file will be generated
+# 0 = Do not output file
+# 1 = Output file
+# 2 = Output and compress file
+spike_trains_file=
+spike_average_file=
+spike_variance_file=
+adjacency_0_1_file=
+adjacency_weights_file=0
+pearson_file=
+
+# Options
+silent=<0 is default, 1 to avoid printing on stdout>
+zip_results=<0 is default, 1 to compress entire output folder after running>
