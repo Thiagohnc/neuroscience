@@ -83,10 +83,6 @@ int param_delay() {
     return stoi(get_param("delay"));
 }
 
-double param_alpha_ewma() {
-    return stod(get_param("alpha_ewma"));
-}
-
 double param_w_intra_mean() {
     return stod(get_param("w_intra_mean"));
 }
@@ -119,16 +115,8 @@ int param_should_be_strongly_connected() {
     return stod(get_param("should_be_strongly_connected"));
 }
 
-double param_pw() {
-    return stod(get_param("pw"));
-}
-
 int param_spike_trains_file() {
 	return (int) stoi(get_param("spike_trains_file"));
-}
-
-int param_firing_rate_file() {
-	return (int) stoi(get_param("firing_rate_file"));
 }
 
 int param_adjacency_0_1_file() {
