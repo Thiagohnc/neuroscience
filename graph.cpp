@@ -55,7 +55,7 @@ int Graph::kth_neighbor(int v, int k) const {
     return neighbors[v][k].d();
 }
 
-double Graph::kth_weight(int v, int k) const {
+int Graph::kth_weight(int v, int k) const {
     assert(k <= neighbor_quantity(v));
     return neighbors[v][k].w();
 }

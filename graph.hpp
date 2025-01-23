@@ -26,7 +26,7 @@ public:
     int N() const;
     int neighbor_quantity(int v) const;
     int kth_neighbor(int v, int k) const;
-    double kth_weight(int v, int k) const;
+    int kth_weight(int v, int k) const;
     Graph reversed_graph() const;
 };
 

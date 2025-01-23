@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
 		/* Allocating Space */
 		
         vector<vector<bool>> spike_trains(N);
-        vector<double> firing_rate(N);
+        vector<int> fired_intra(N), fired_inter(N);
 		
         set_seed(samples_seeds[sample]);
 		
@@ -97,7 +97,6 @@ int main(int argc, char *argv[]) {
         for(int u = 0; u < N; u++) {
             for(int t = 0; t <= T ; t++)
                 spike_trains[u][t] = false;
-			firing_rate[u] = param_mu();
 			progress_bar(u + 1, N, "Inicializando");
         }
         
@@ -106,7 +105,7 @@ int main(int argc, char *argv[]) {
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
-                firing_rate[u] = param_mu();
+                fired_intra[u] = fired_inter[u] = 0;
             }
             
             /* Activation by neighbors */
@@ -115,8 +114,11 @@ int main(int argc, char *argv[]) {
 					if(spike_trains[u][tt%(T+1)]) {
 						for(int k = 0; k < g.neighbor_quantity(u); k++) {
 							int v = g.kth_neighbor(u,k);
-							double w = g.kth_weight(u,k);
-							firing_rate[v] += (w * spike_trains[u][tt%(T+1)])/(double)N;
+							int w = g.kth_weight(u,k);
+							if(w == 1 || w == -1)
+								fired_intra[v] += w;
+							else
+								fired_inter[v] += w;
 						}
 					}
                 }
@@ -124,7 +126,9 @@ int main(int argc, char *argv[]) {
             
             /* Firing */
             for(int u = 0; u < N; u++) {
-                spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u]);
+				double firing_rate = param_mu() + (fired_intra[u] * param_mu_in() + (fired_inter[u]/2) * param_mu_out())/N;
+				firing_rate = firing_rate < 0 ? 0 : firing_rate > 1 ? 1 : firing_rate;
+                spike_trains[u][t%(T+1)] = coin_flip(firing_rate);
             }
 			
 			if(t % (T/100) == 0 || t == T + BURN_T) progress_bar(t, T + BURN_T, "Simulação");
@@ -163,7 +167,8 @@ int main(int argc, char *argv[]) {
 			progress_bar(i + 1, N, "Liberando espaço dos vetores");
         }
 		spike_trains.clear();
-		firing_rate.clear();
+		fired_intra.clear();
+		fired_inter.clear();
 		
 		/* Spectral Clustering */
 		
@@ -172,7 +177,7 @@ int main(int argc, char *argv[]) {
 		cmd += " n_clusters=2";
 		cmd += " seed=" + to_string(samples_seeds[sample]);
 		progress_bar(0, 2, "Spectral Clustering");
-		exec_shell(cmd + " pot=1" + " filename=spectral_clustering_1");
+		exec_shell(cmd + " pot=1" + " filename=spectral_clustering_1 &");
 		progress_bar(1, 2, "Spectral Clustering");
 		exec_shell(cmd + " pot=2" + " filename=spectral_clustering_2");
 		progress_bar(2, 2, "Spectral Clustering");

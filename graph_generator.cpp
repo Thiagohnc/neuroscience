@@ -43,12 +43,12 @@ Graph stochastic_block_model(vector<vector<int> > &groups, vector<vector<double>
                     if(o == d) continue;
                     
                     if(g_orig == g_dest) {
-                        weight = param_mu_in();
+                        weight = 1;
                         if(coin_flip(1 - intra_exc_portion))
                             weight *= -1;
                     }
                     else {
-                        weight = param_mu_out();
+                        weight = 2;
                         if(coin_flip(1 - inter_exc_portion))
                             weight *= -1;
                     }
