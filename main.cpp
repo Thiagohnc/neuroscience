@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate[u]);
             }
 			
-			if(t % (T/100) == 0 || t == T + BURN_T) progress_bar(t, T + BURN_T, "Simulação");
+			if(T + BURN_T < 100 || t % ((T + BURN_T)/100) == 0 || t == T + BURN_T) progress_bar(t, T + BURN_T, "Simulação");
         }
         
         /* Save current parameters in file */
