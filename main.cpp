@@ -72,9 +72,9 @@ int main(int argc, char *argv[]) {
 			else
 				g = stochastic_block_model(groups, p);
 		}
-		else {
+		/*else {
 			g = graph_from_file(param_graph());
-		}
+		}*/
 
 		const int N = g.N();
 
@@ -114,11 +114,21 @@ int main(int argc, char *argv[]) {
 					if(spike_trains[u][tt%(T+1)]) {
 						for(int k = 0; k < g.neighbor_quantity(u); k++) {
 							int v = g.kth_neighbor(u,k);
-							int w = g.kth_weight(u,k);
-							if(w == 1 || w == -1)
-								fired_intra[v] += w;
-							else
-								fired_inter[v] += w;
+							Weight w = g.kth_weight(u,k);
+							switch(w) {
+								case IntraExc:
+									fired_intra[v]++;
+									break;
+								case InterExc:
+									fired_inter[v]++;
+									break;
+								case IntraInb:
+									fired_intra[v]--;
+									break;
+								case InterInb:
+									fired_inter[v]--;
+									break;
+							}
 						}
 					}
                 }
@@ -126,7 +136,7 @@ int main(int argc, char *argv[]) {
             
             /* Firing */
             for(int u = 0; u < N; u++) {
-				double firing_rate = param_mu() + (fired_intra[u] * param_mu_in() + (fired_inter[u]/2) * param_mu_out())/N;
+				double firing_rate = param_mu() + (fired_intra[u] * param_mu_in() + fired_inter[u] * param_mu_out())/N;
 				firing_rate = firing_rate < 0 ? 0 : firing_rate > 1 ? 1 : firing_rate;
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate);
             }

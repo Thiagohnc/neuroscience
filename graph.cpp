@@ -1,5 +1,6 @@
 #include "graph.hpp"
 #include "params.hpp"
+#include "utils.hpp"
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -10,7 +11,7 @@ using namespace std;
 
 /* Edge class */
 
-Edge::Edge(int d, double w) {
+Edge::Edge(int d, Weight w) {
     destiny = d;
     weight = w;
 }
@@ -25,7 +26,7 @@ int Edge::d() const {
     return destiny;
 }
 
-double Edge::w() const {
+Weight Edge::w() const {
     return weight;
 }
 
@@ -38,7 +39,7 @@ Graph::Graph(int n) : node_quantity(n) {
 
 Graph::Graph() {}
 
-void Graph::add_edge(int o, int d, double w) {
+void Graph::add_edge(int o, int d, Weight w) {
     neighbors[o].push_back(Edge(d, w));
 }
 
@@ -55,7 +56,7 @@ int Graph::kth_neighbor(int v, int k) const {
     return neighbors[v][k].d();
 }
 
-int Graph::kth_weight(int v, int k) const {
+Weight Graph::kth_weight(int v, int k) const {
     assert(k <= neighbor_quantity(v));
     return neighbors[v][k].w();
 }
@@ -66,7 +67,7 @@ Graph Graph::reversed_graph() const {
     for(int u = 0; u < N; u++) {
         for(int k = 0; k < neighbor_quantity(u); k++) {
             int v = kth_neighbor(u, k);
-            double w = kth_weight(u, k);
+            Weight w = kth_weight(u, k);
             rev.add_edge(v, u, w);
         }
     }

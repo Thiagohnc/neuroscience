@@ -10,6 +10,8 @@
 #include <string>
 #include <vector>
 
+enum Weight {IntraExc, InterExc, IntraInb, InterInb};
+
 typedef std::chrono::time_point<std::chrono::high_resolution_clock> timepoint;
 
 long unsigned int rand(int cap);

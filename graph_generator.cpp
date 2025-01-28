@@ -38,19 +38,19 @@ Graph stochastic_block_model(vector<vector<int> > &groups, vector<vector<double>
                 for(int j = 0; j < (int)groups[g_dest].size(); j++) {
                     int o = groups[g_orig][i];
                     int d = groups[g_dest][j];
-                    double weight;
+                    Weight weight;
                     
                     if(o == d) continue;
                     
                     if(g_orig == g_dest) {
-                        weight = 1;
+                        weight = IntraExc;
                         if(coin_flip(1 - intra_exc_portion))
-                            weight *= -1;
+                            weight = IntraInb;
                     }
                     else {
-                        weight = 2;
+                        weight = InterExc;
                         if(coin_flip(1 - inter_exc_portion))
-                            weight *= -1;
+                            weight = InterInb;
                     }
                     
                     if(coin_flip(prob)) {
@@ -74,7 +74,7 @@ Graph sc_stochastic_block_model(vector<vector<int> > &groups, vector<vector<doub
     throw runtime_error("could not generate a strongly connected graph");
 } 
 
-Graph graph_from_file(string filepath) {
+/*Graph graph_from_file(string filepath) {
     vector<vector<double>> adj_matrix;
     ifstream file(filepath);
     if(file.is_open()) {
@@ -103,4 +103,4 @@ Graph graph_from_file(string filepath) {
     }
 
     return g;
-}
+}*/

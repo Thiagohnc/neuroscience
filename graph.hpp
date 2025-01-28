@@ -2,17 +2,18 @@
 #define GRAPH_HPP
 
 #include <vector>
+#include "utils.hpp"
 
 class Edge {
 private:
     int destiny;
-    double weight;
+    Weight weight;
 public:
-    Edge(int d, double w);
+    Edge(int d, Weight w);
     Edge();
     bool operator < (const Edge &other) const;
     int d() const;
-    double w() const;
+    Weight w() const;
 };
 
 class Graph {
@@ -22,11 +23,11 @@ private:
 public:
     Graph(int n);
     Graph();
-    void add_edge(int o, int d, double w);
+    void add_edge(int o, int d, Weight w);
     int N() const;
     int neighbor_quantity(int v) const;
     int kth_neighbor(int v, int k) const;
-    int kth_weight(int v, int k) const;
+    Weight kth_weight(int v, int k) const;
     Graph reversed_graph() const;
 };
 
