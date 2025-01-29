@@ -1,12 +1,12 @@
-# Function to compute absolute and relative absolute errors
+# Function to compute absolute error
 
 # Imports
 import numpy as np
 
 def absolute_error(A, B, exclude_diagonal=False):
     """
-    Compute the absolute error (AE) and the relative absolute error (RAE) 
-    between two matrices element-wise and returns the mean of these errors.
+    Compute the absolute error (AE) between two matrices element-wise
+    and returns the mean of these errors.
 
     Parameters
     ----------
@@ -32,16 +32,7 @@ def absolute_error(A, B, exclude_diagonal=False):
         raise ValueError("Matrices A and B must have the same shape.")
     
     # Compute the element-wise absolute difference
-    abs_diff = np.abs(A - B)
-
-    # Compute the denominator
-    denom = np.abs(A)
-
-    # Compute the absolute error (AE)
-    ae = abs_diff
-
-    # Compute the relative absolute error (RAE)
-    rae = abs_diff/denom
+    absolute_error = np.abs(A - B)
 
     # Optionally exclude the main diagonal
     if exclude_diagonal:
@@ -50,8 +41,7 @@ def absolute_error(A, B, exclude_diagonal=False):
             raise ValueError("Matrices must be square to exclude the main diagonal.")
         # Mask out the main diagonal
         diagonal_indices = np.diag_indices_from(A)
-        ae[diagonal_indices] = np.nan # Exclude diagonal by setting to NaN
-        rae[diagonal_indices] = np.nan
+        absolute_error[diagonal_indices] = np.nan # Exclude diagonal by setting to NaN
 
-    # Compute the mean AE and the mean RAE, ignoring NaN values if diagonal is excluded
-    return np.nanmean(ae), np.nanmean(rae)
+    # Compute the mean AE, ignoring NaN values if diagonal is excluded
+    return np.nanmean(absolute_error)
