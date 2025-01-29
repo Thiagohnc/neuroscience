@@ -28,6 +28,7 @@ int main(int argc, char *argv[]) {
     const vector<long unsigned int> samples_seeds = rand_vector(samples, ULONG_MAX);
 	const int T = param_T();
     const int BURN_T = param_BURN_T();
+	double mu = param_mu();
 	string path;
     
     for(int sample = 0; sample < samples; sample++) {
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]) {
         for(int u = 0; u < N; u++) {
             for(int t = 0; t <= T ; t++)
                 spike_trains[u][t] = false;
-			firing_rate[u] = param_mu();
+			firing_rate[u] = mu;
 			progress_bar(u + 1, N, "Inicializando");
         }
         
@@ -106,7 +107,7 @@ int main(int argc, char *argv[]) {
         for(int t = 0; t <= (T + BURN_T); t++) {
             /* Initialization */
             for(int u = 0; u < N; u++) {
-                firing_rate[u] = param_mu();
+                firing_rate[u] = mu;
             }
             
             /* Activation by neighbors */
