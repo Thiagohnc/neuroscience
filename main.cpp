@@ -141,7 +141,6 @@ int main(int argc, char *argv[]) {
             /* Firing */
             for(int u = 0; u < N; u++) {
 				double firing_rate = mu + (fired_intra[u] * mu_in + fired_inter[u] * mu_out)/N;
-				//firing_rate = firing_rate < 0 ? 0 : firing_rate > 1 ? 1 : firing_rate;
                 spike_trains[u][t%(T+1)] = coin_flip(firing_rate);
             }
 			
