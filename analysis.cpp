@@ -180,6 +180,14 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 	}
 
 	int blocksize = next_power_of_two(N);
+	double op1 = pow(blocksize, log2(7));
+	double op2 = pow(blocksize/2, log2(7)) + N * (N - blocksize);
+	bool fully_calculated_with_strassen = true;
+	if(op2 < op1) {
+		fully_calculated_with_strassen = false;
+		blocksize /= 2;
+	}
+
 	int blocks = (T - delay + blocksize - 1)/blocksize;
 	Matrix M(blocksize, 0);
 	for(int b = 0; b < blocks; b++) {
@@ -193,11 +201,25 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 
 		M += (A * B);
 
-		progress_bar(b + 1, blocks, "Output: Pearson - Cálculo");
+		if(fully_calculated_with_strassen) progress_bar(b + 1, blocks, "Output: Pearson - Cálculo");
+		else progress_bar(b + 1, blocks + N, "Output: Pearson - Cálculo");
 	}
 
-	for(int i = 0; i < N; i++) {
-		for(int j = 0; j < N; j++) {
+	if(!fully_calculated_with_strassen) {
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if(i >= blocksize || j >= blocksize) {
+					corr[i][j] = pearson(i, j, spikes, means, dens, delayed_dens);
+				}
+			}
+			progress_bar(blocks + i + 1, blocks + N, "Output: Pearson - Cálculo");
+		}
+	}
+
+	const int N_Strassen = min(N, blocksize);
+
+	for(int i = 0; i < N_Strassen; i++) {
+		for(int j = 0; j < N_Strassen; j++) {
 			corr[i][j] = M.at(i, j) / sqrt(dens[i] * delayed_dens[j]);
 		}
 		progress_bar(i + 1, N, "Output: Pearson - Finalização");
