@@ -68,16 +68,6 @@ public:
 	}
 
 	Matrix operator* (const Matrix &B) const {
-		/*Matrix C(n, 0);
-		for(int i = 0; i < n; i++) {
-			for(int j = 0; j < n; j++) {
-				for(int k = 0; k < n; k++) {
-					C[i][j] += m[i][k] * B[k][j];
-				}
-			}
-		}
-		return C;*/
-
 		Matrix C(n);
 		if(n <= 64) {
 			for(int i = 0; i < n; i++) {
@@ -100,6 +90,7 @@ public:
 			Matrix B21 = B.copy_to(half, 0, n, half);
 			Matrix B22 = B.copy_to(half, half, n, n);
 
+			/*
 			Matrix P1 = (A11 + A22) * (B11 + B22);
 			Matrix P2 = (A21 + A22) * B11;
 			Matrix P3 = A11 * (B12 - B22);
@@ -111,7 +102,20 @@ public:
 			C.copy_from(P1 + P4 - P5 + P7, 0, 0);
 			C.copy_from(P3 + P5, 0, half);
 			C.copy_from(P2 + P4, half, 0);
-			C.copy_from(P1 - P2 + P3 + P6, half, half);
+			C.copy_from(P1 - P2 + P3 + P6, half, half);*/
+
+			Matrix M1 = A11 * B11;
+			Matrix M2 = A12 * B21;
+			Matrix M3 = A21 * (B22 - B11);
+			Matrix M4 = A22 * B22;
+			Matrix M5 = (A21 + A22) * (B21 + B22);
+			Matrix M6 = (A22 - A12) * (B22 - B12);
+			Matrix M7 = (A22 - A11) * B12;
+
+			C.copy_from(M1 + M2, 0, 0);
+			C.copy_from(M5 - M7, 0, half);
+			C.copy_from(M3 + M6, half, 0);
+			C.copy_from(M5 + M6 - M2 - M4, half, half);
 		}
 
 		return C;
@@ -180,15 +184,22 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 	}
 
 	int blocksize = next_power_of_two(N);
-	double op1 = pow(blocksize, log2(7));
-	double op2 = pow(blocksize/2, log2(7)) + N * (N - blocksize);
+	double op1 = pow(blocksize, log2(7) - 1);
+	double op2 = pow(blocksize/2, log2(7) - 1) + N * (N - blocksize/2);
+	if(delay == 0) op2 = pow(blocksize/2, log2(7) - 1) + N * (N - blocksize/2)/2; // Half of operations due to symmetry
 	bool fully_calculated_with_strassen = true;
 	if(op2 < op1) {
 		fully_calculated_with_strassen = false;
 		blocksize /= 2;
 	}
 
-	int blocks = (T - delay + blocksize - 1)/blocksize;
+	if(delay == 0 && N*N/2 < op1 && N*N/2 < op2) {
+		fully_calculated_with_strassen = false;
+		blocksize = 0;
+	}
+
+	int blocks = blocksize == 0 ? 0 : (T - delay + blocksize - 1)/blocksize;
+	const int bsizesquare = blocksize * blocksize;
 	Matrix M(blocksize, 0);
 	for(int b = 0; b < blocks; b++) {
 		Matrix A(blocksize), B(blocksize);
@@ -202,17 +213,21 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 		M += (A * B);
 
 		if(fully_calculated_with_strassen) progress_bar(b + 1, blocks, "Output: Pearson - Cálculo");
-		else progress_bar(b + 1, blocks + N, "Output: Pearson - Cálculo");
+		else progress_bar(((b + 1) * bsizesquare) / blocks, N * N, "Output: Pearson - Cálculo");
 	}
 
 	if(!fully_calculated_with_strassen) {
+		int calculated = bsizesquare;
 		for(int i = 0; i < N; i++) {
 			for(int j = 0; j < N; j++) {
+				if(delay == 0 && j < i) continue;
 				if(i >= blocksize || j >= blocksize) {
 					corr[i][j] = pearson(i, j, spikes, means, dens, delayed_dens);
+					if(delay == 0 && i != j) {corr[j][i] = corr[i][j]; calculated++;}
+					calculated++;
 				}
 			}
-			progress_bar(blocks + i + 1, blocks + N, "Output: Pearson - Cálculo");
+			progress_bar(calculated, N * N, "Output: Pearson - Cálculo");
 		}
 	}
 
