@@ -24,48 +24,51 @@ public:
 		for(int i = 0; i < n; i++) m[i].clear();
 		m.clear();
 	}
-	vector<double>& operator[] (int r) { return m[r]; }
 
-	Matrix operator+ (Matrix& B) const {
+	double at(int r, int c) const {
+		return m[r][c];
+	}
+
+	Matrix operator+ (const Matrix& B) const {
 		Matrix C(n);
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				C[i][j] = m[i][j] + B[i][j];
+				C.set(i, j, at(i, j) + B.at(i, j));
 			}
 		}
 		return C;
 	}
 
-	Matrix& operator+= (Matrix& B) {
+	Matrix& operator+= (const Matrix& B) {
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				m[i][j] += B[i][j];
+				set(i, j, at(i, j) + B.at(i, j));
 			}
 		}
 		return *this;
 	}
 
-	Matrix operator- (Matrix& B) const {
+	Matrix operator- (const Matrix& B) const {
 		Matrix C(n);
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				C[i][j] = m[i][j] - B[i][j];
+				C.set(i, j, at(i, j) - B.at(i, j));
 			}
 		}
 		return C;
 	}
 
-	Matrix& operator-= (Matrix& B) {
+	Matrix& operator-= (const Matrix& B) {
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
-				m[i][j] -= B[i][j];
+				set(i, j, at(i, j) - B.at(i, j));
 			}
 		}
 		return *this;
 	}
 
-	Matrix operator* (Matrix &B) const {
-		Matrix C(n, 0);
+	Matrix operator* (const Matrix &B) const {
+		/*Matrix C(n, 0);
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				for(int k = 0; k < n; k++) {
@@ -73,7 +76,67 @@ public:
 				}
 			}
 		}
+		return C;*/
+
+		Matrix C(n);
+		if(n <= 64) {
+			for(int i = 0; i < n; i++) {
+				for(int j = 0; j < n; j++) {
+					for(int k = 0; k < n; k++) {
+						C.set(i, j, C.at(i, j) + at(i, k) * B.at(k, j));
+					}
+				}
+			}
+		}
+		else {
+			int half = n/2;
+			Matrix A11 = copy_to(0, 0, half, half);
+			Matrix A12 = copy_to(0, half, half, n);
+			Matrix A21 = copy_to(half, 0, n, half);
+			Matrix A22 = copy_to(half, half, n, n);
+
+			Matrix B11 = B.copy_to(0, 0, half, half);
+			Matrix B12 = B.copy_to(0, half, half, n);
+			Matrix B21 = B.copy_to(half, 0, n, half);
+			Matrix B22 = B.copy_to(half, half, n, n);
+
+			Matrix P1 = (A11 + A22) * (B11 + B22);
+			Matrix P2 = (A21 + A22) * B11;
+			Matrix P3 = A11 * (B12 - B22);
+			Matrix P4 = A22 * (B21 - B11);
+			Matrix P5 = (A11 + A12) * B22;
+			Matrix P6 = (A21 - A11) * (B11 + B12);
+			Matrix P7 = (A12 - A22) * (B21 + B22);
+
+			C.copy_from(P1 + P4 - P5 + P7, 0, 0);
+			C.copy_from(P3 + P5, 0, half);
+			C.copy_from(P2 + P4, half, 0);
+			C.copy_from(P1 - P2 + P3 + P6, half, half);
+		}
+
 		return C;
+	}
+
+	void set(int i, int j, double val) {
+		m[i][j] = val;
+	}
+
+	Matrix copy_to(int x0, int y0, int x1, int y1) const {
+		Matrix B(x1 - x0);
+		for(int i = 0; i < x1 - x0; i++) {
+			for(int j = 0; j < y1 - y0; j++) {
+				B.set(i, j, at(x0 + i, y0 + j));
+			}
+		}
+		return B;
+	}
+
+	void copy_from(const Matrix& A, int x0, int y0) {
+		for(int i = 0; i < A.n; i++) {
+			for(int j = 0; j < A.n; j++) {
+				set(x0 + i, y0 + j, A.at(i, j));
+			}
+		}
 	}
 };
 
@@ -123,20 +186,19 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 		Matrix A(blocksize), B(blocksize);
 		for(int i = 0, ispk = 0; i < blocksize; i++, ispk++) {
 			for(int j = 0, jspk = b * blocksize; j < blocksize; j++, jspk++) {
-				A[i][j] = (ispk < N && jspk < T) ? spikes[ispk][jspk] - means[ispk] : 0;
-				B[j][i] = (ispk < N && jspk + delay < T) ? spikes[ispk][jspk + delay] - means[ispk] : 0;
+				A.set(i, j, (ispk < N && jspk < T) ? spikes[ispk][jspk] - means[ispk] : 0);
+				B.set(j, i, (ispk < N && jspk + delay < T) ? spikes[ispk][jspk + delay] - means[ispk] : 0);
 			}
 		}
 
-		Matrix mult = A * B;
-		M += mult;
+		M += (A * B);
 
 		progress_bar(b + 1, blocks, "Output: Pearson - Cálculo");
 	}
 
 	for(int i = 0; i < N; i++) {
 		for(int j = 0; j < N; j++) {
-			corr[i][j] = M[i][j] / sqrt(dens[i] * delayed_dens[j]);
+			corr[i][j] = M.at(i, j) / sqrt(dens[i] * delayed_dens[j]);
 		}
 		progress_bar(i + 1, N, "Output: Pearson - Finalização");
 	}
