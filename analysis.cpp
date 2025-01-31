@@ -69,7 +69,7 @@ public:
 		for(int i = 0; i < n; i++) {
 			for(int j = 0; j < n; j++) {
 				for(int k = 0; k < n; k++) {
-					C[i][j] += m[i][k] + B[k][j];
+					C[i][j] += m[i][k] * B[k][j];
 				}
 			}
 		}
@@ -124,11 +124,13 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 		for(int i = 0, ispk = 0; i < blocksize; i++, ispk++) {
 			for(int j = 0, jspk = b * blocksize; j < blocksize; j++, jspk++) {
 				A[i][j] = (ispk < N && jspk < T) ? spikes[ispk][jspk] - means[ispk] : 0;
-				B[i][j] = (ispk < N && jspk + delay < T) ? spikes[ispk][jspk + delay] - means[ispk] : 0;
+				B[j][i] = (ispk < N && jspk + delay < T) ? spikes[ispk][jspk + delay] - means[ispk] : 0;
 			}
 		}
+
 		Matrix mult = A * B;
 		M += mult;
+
 		progress_bar(b + 1, blocks, "Output: Pearson - Cálculo");
 	}
 
