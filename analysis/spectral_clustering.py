@@ -1,5 +1,6 @@
 import sys
 
+import math
 import numpy as np
 from sklearn.cluster import SpectralClustering
 
@@ -20,6 +21,8 @@ sim = read_pearson(args['input_folder'])
 for i in range(len(sim)):
     for j in range(i + 1):
         sim[i][j] = sim[j][i] = (abs(sim[i][j]) + abs(sim[j][i]) / 2) ** int(args['pot'])
+        if math.isnan(sim[i][j]):
+            sim[i][j] = sim[j][i] = 0
 
 clustering = SpectralClustering(n_clusters=int(args['n_clusters']),
                                 assign_labels='kmeans',
