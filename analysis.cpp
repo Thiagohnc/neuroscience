@@ -1,26 +1,26 @@
 #include "analysis.hpp"
 #include "params.hpp"
+#include "types.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <Eigen/Dense>
 #include <cmath>
 #include <fstream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
-vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
+vvdouble pearson_all_pairs(vvbool &spikes) {
 	const int delay = param_delay();
 	
 	progress_bar(0, 4, "Output: Pearson - Alocação de variáveis");
-	vector<double> means(spikes.size());
+	vdouble means(spikes.size());
 	progress_bar(1, 4, "Output: Pearson - Alocação de variáveis");
-	vector<double> dens(spikes.size());
+	vdouble dens(spikes.size());
 	progress_bar(2, 4, "Output: Pearson - Alocação de variáveis");
-	vector<double> delayed_dens(spikes.size());
+	vdouble delayed_dens(spikes.size());
 	progress_bar(3, 4, "Output: Pearson - Alocação de variáveis");
-	vector<vector<double>> corr(spikes.size(), vector<double>(spikes.size()));
+	vvdouble corr(spikes.size(), vdouble(spikes.size()));
 	progress_bar(4, 4, "Output: Pearson - Alocação de variáveis");
 	
 	int T = spikes[0].size();
@@ -78,8 +78,8 @@ vector<vector<double>> pearson_all_pairs(vector<vector<bool>> &spikes) {
 	return corr;
 }
 
-vector<vector<bool>> read_spike_trains_file(string file_path) {
-	vector<vector<bool>> spikes;
+vvbool read_spike_trains_file(string file_path) {
+	vvbool spikes;
     ifstream file(file_path);
 	string line;
 	
@@ -93,10 +93,10 @@ vector<vector<bool>> read_spike_trains_file(string file_path) {
 	return spikes;
 }
 
-void write_pearson_correlation(vector<vector<bool>> &spikes, string file_path) {
+void write_pearson_correlation(vvbool &spikes, string file_path) {
 	ofstream pearson_file(file_path);
 	
-	vector<vector<double>> corr = pearson_all_pairs(spikes);
+	vvdouble corr = pearson_all_pairs(spikes);
 	for(int i = 0; i < (int)corr.size(); i++) {
 		for(int j = 0; j < (int)corr.size(); j++) {
 			pearson_file << corr[i][j] << " ";

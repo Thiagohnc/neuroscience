@@ -1,4 +1,5 @@
 #include "params.hpp"
+#include "types.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <cassert>
@@ -10,7 +11,6 @@
 #include <stdexcept>
 #include <string>
 #include <sys/stat.h>
-#include <vector>
 
 using namespace std;
 using namespace std::chrono;
@@ -23,8 +23,8 @@ long unsigned int rand(int cap) {
 	return twister() % cap;
 }
 
-vector<long unsigned int> rand_vector(int n, unsigned long int cap) {
-    vector<long unsigned int> v(n);
+vlonguint rand_vector(int n, unsigned long int cap) {
+    vlonguint v(n);
     for(int i = 0; i < n; i++)
         v[i] = rand(cap);
     return v;
@@ -45,7 +45,7 @@ int mod(int x, int m) {
     return x % m;
 }
 
-double mean(const vector<bool> &v) {
+double mean(const vbool &v) {
 	long long int sum = 0;
 	for(int i = 0; i < (int)v.size(); i++) {
 		sum += v[i];
@@ -53,40 +53,40 @@ double mean(const vector<bool> &v) {
 	return (double)sum/v.size();
 }
 
-vector<int> vector_to_ints(vector<string> v) {
-    vector<int> ans;
+vint vector_to_ints(vstring v) {
+    vint ans;
     for(int i = 0; i < (int)v.size(); i++) {
         ans.push_back(stoi(v[i]));
     }
     return ans;
 }
 
-vector<double> vector_to_doubles(vector<string> v) {
-    vector<double> ans;
+vdouble vector_to_doubles(vstring v) {
+    vdouble ans;
     for(int i = 0; i < (int)v.size(); i++) {
         ans.push_back(stod(v[i]));
     }
     return ans;
 }
 
-vector<bool> vector_to_bools(vector<string> v) {
-    vector<bool> ans;
+vbool vector_to_bools(vstring v) {
+    vbool ans;
     for(int i = 0; i < (int)v.size(); i++) {
         ans.push_back(stoi(v[i]));
     }
     return ans;
 }
 
-vector<vector<int>> matrix_to_ints(vector<vector<string>> v) {
-    vector<vector<int>> ans;
+vvint matrix_to_ints(vvstring v) {
+    vvint ans;
     for(int i = 0; i < (int)v.size(); i++) {
         ans.push_back(vector_to_ints(v[i]));
     }
     return ans;
 }
 
-vector<string> split(string str, char delim) {
-    vector<string> ans;
+vstring split(string str, char delim) {
+    vstring ans;
     int next_char_idx = 0;
     for(int i = 0; i < (int)str.size(); i++) {
         if(str[i] == delim) {
@@ -102,8 +102,8 @@ vector<string> split(string str, char delim) {
     return ans;
 }
 
-vector<vector<string>> string_to_matrix(string str) {
-    vector<vector<string>> ans;
+vvstring string_to_matrix(string str) {
+    vvstring ans;
     int idx = 1; // Ignore first bracket
     while(idx < (int)str.size() - 1) { // Ignore last bracket
         if(str[idx] == '[') {

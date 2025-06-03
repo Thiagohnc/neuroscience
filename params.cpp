@@ -1,4 +1,5 @@
 #include "params.hpp"
+#include "types.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <cassert>
@@ -8,7 +9,6 @@
 #include <random>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -27,7 +27,7 @@ void read_params() {
         while(getline(file,line)) {
 			line = strip(line);
 			if(line.size() == 0 || line[0] == '#') continue;
-            vector<string> p_val = split(line, '=');
+            vstring p_val = split(line, '=');
             param_values[p_val[0]] = p_val[1];
         }
     }
@@ -67,7 +67,7 @@ double param_mu_out() {
     return stod(get_param("mu_out"));
 }
 
-vector<int> param_group_n() {
+vint param_group_n() {
     string str_param = get_param("group_n");
     if(str_param.front() != '[' and str_param.back() != ']')
         throw invalid_argument("Param group_n should be given as list, e.g. [150,150] for  groups of 150 nodes");

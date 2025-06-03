@@ -1,10 +1,10 @@
 #include "graph.hpp"
 #include "io.hpp"
 #include "params.hpp"
+#include "types.hpp"
 #include "utils.hpp"
 #include <fstream>
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -44,7 +44,7 @@ namespace {
     };
 }
 
-void output_spike_trains(const vector<vector<bool>> &spike_trains, const string &output_folder) {
+void output_spike_trains(const vvbool &spike_trains, const string &output_folder) {
     int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("spike_trains", output_folder);
@@ -56,7 +56,7 @@ void output_spike_trains(const vector<vector<bool>> &spike_trains, const string 
     io.finish();
 }
 
-void output_firing_rate(const Graph &g, const vector<vector<bool>> &spike_trains, const string &output_folder) {
+void output_firing_rate(const Graph &g, const vvbool &spike_trains, const string &output_folder) {
     int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("firing_rate", output_folder);
@@ -82,7 +82,7 @@ void output_firing_rate(const Graph &g, const vector<vector<bool>> &spike_trains
     io.finish();
 }
 
-void output_spike_average(const vector<vector<bool>> &spike_trains, const string &output_folder) {
+void output_spike_average(const vvbool &spike_trains, const string &output_folder) {
     int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("spike_average", output_folder);
@@ -96,7 +96,7 @@ void output_spike_average(const vector<vector<bool>> &spike_trains, const string
     io.finish();
 }
 
-void output_spike_variance(const vector<vector<bool>> &spike_trains, const string &output_folder) {
+void output_spike_variance(const vvbool &spike_trains, const string &output_folder) {
     int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("spike_variance", output_folder);

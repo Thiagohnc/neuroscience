@@ -1,8 +1,8 @@
 #include "graph.hpp"
 #include "params.hpp"
+#include "types.hpp"
 #include <algorithm>
 #include <cassert>
-#include <vector>
 
 #include <iostream>
 
@@ -75,7 +75,7 @@ Graph Graph::reversed_graph() const {
 
 /* Algorithms */
 
-void dfs(const Graph &g, int u, vector<bool> &mrk) {
+void dfs(const Graph &g, int u, vbool &mrk) {
     mrk[u] = true;
     for(int k = 0; k < g.neighbor_quantity(u); k++) {
         int v = g.kth_neighbor(u, k);
@@ -84,15 +84,15 @@ void dfs(const Graph &g, int u, vector<bool> &mrk) {
     }
 }
 
-bool all_true(vector<bool> &v) {
+bool all_true(vbool &v) {
     return all_of(v.begin(), v.end(), [] (bool val) {return val;});
 }
 
 bool strongly_connected(const Graph &g) {
     const int N = g.N();
 
-    vector<bool> mrk(N, false);
-    vector<bool> rev_mrk(N, false);
+    vbool mrk(N, false);
+    vbool rev_mrk(N, false);
     dfs(g, 0, mrk);
     dfs(g.reversed_graph(), 0, rev_mrk);
 

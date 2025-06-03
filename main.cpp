@@ -2,17 +2,17 @@
 #include "graph_generator.hpp"
 #include "graph.hpp"
 #include "io.hpp"
-#include "utils.hpp"
 #include "params.hpp"
+#include "types.hpp"
+#include "utils.hpp"
 #include <climits>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <sstream>
-#include <vector>
 
 using namespace std;
-
+	
 int main(int argc, char *argv[]) {
 	ios_base::sync_with_stdio(false);
     
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     const int samples = param_samples();
     // Initial seed to set a different and random seed for each sample
     set_seed(param_seed());
-    const vector<long unsigned int> samples_seeds = rand_vector(samples, ULONG_MAX);
+    const vlonguint samples_seeds = rand_vector(samples, ULONG_MAX);
 	const int T = param_T();
     const int BURN_T = param_BURN_T();
 	double mu = param_mu();
@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
         Graph g;
         
 		if(param_graph() == "SBM") {
-			vector<vector<int> > groups;
-			vector<int> group_n = param_group_n();
+			vvint groups;
+			vint group_n = param_group_n();
 			groups.resize(group_n.size());
 			
 			if(group_n.size() != 2)
@@ -64,9 +64,9 @@ int main(int argc, char *argv[]) {
 				for(int k = 0; k < group_n[i]; k++)
 					groups[i].push_back(u++);
 
-			vector<vector<double> > p;
-			p.push_back(vector<double>({param_p(), param_q()}));
-			p.push_back(vector<double>({param_q(), param_p()}));
+			vvdouble p;
+			p.push_back(vdouble({param_p(), param_q()}));
+			p.push_back(vdouble({param_q(), param_p()}));
 			
 			if(param_should_be_strongly_connected())
 				g = sc_stochastic_block_model(groups, p, 1000000);
@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
 
 		/* Allocating Space */
 		
-        vector<vector<bool>> spike_trains(N);
-        vector<double> firing_rate(N);
+        vvbool spike_trains(N);
+        vdouble firing_rate(N);
 		
         set_seed(samples_seeds[sample]);
 		
@@ -150,7 +150,7 @@ int main(int argc, char *argv[]) {
 		
 		/* Pearson Correlation */
 		path = output_folder + "/pearson";
-		vector<bool> temp(T+1);
+		vbool temp(T+1);
 		for(int u = 0; u < N; u++) {
 			for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
 			for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];

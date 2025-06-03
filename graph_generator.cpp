@@ -1,20 +1,20 @@
 #include "graph_generator.hpp"
 #include "graph.hpp"
-#include "utils.hpp"
 #include "params.hpp"
+#include "types.hpp"
+#include "utils.hpp"
 #include <cassert>
 #include <cmath>
 #include <fstream>
 #include <random>
 #include <string>
-#include <vector>
 
 #include <iostream>
 #include <stdexcept>
 
 using namespace std;
 
-Graph stochastic_block_model(vector<vector<int> > &groups, vector<vector<double> > &p) {
+Graph stochastic_block_model(vvint &groups, vvdouble &p) {
     default_random_engine generator(param_seed());
     double intra_exc_portion = param_intra_exchitatory_portion();
     double inter_exc_portion = param_inter_exchitatory_portion();
@@ -64,7 +64,7 @@ Graph stochastic_block_model(vector<vector<int> > &groups, vector<vector<double>
     return g;
 }
 
-Graph sc_stochastic_block_model(vector<vector<int> > &groups, vector<vector<double> > &p, int max_tries) {
+Graph sc_stochastic_block_model(vvint &groups, vvdouble &p, int max_tries) {
     for(int i = 0; i < max_tries; i++) {
         Graph g = stochastic_block_model(groups, p);
         if(strongly_connected(g))
@@ -75,7 +75,7 @@ Graph sc_stochastic_block_model(vector<vector<int> > &groups, vector<vector<doub
 } 
 
 Graph graph_from_file(string filepath) {
-    vector<vector<double>> adj_matrix;
+    vvdouble adj_matrix;
     ifstream file(filepath);
     if(file.is_open()) {
         string line;
