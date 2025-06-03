@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 			p.push_back(vector<double>({param_q(), param_p()}));
 			
 			if(param_should_be_strongly_connected())
-				g = sc_stochastic_block_model(groups, p);
+				g = sc_stochastic_block_model(groups, p, 1000000);
 			else
 				g = stochastic_block_model(groups, p);
 		}
@@ -142,6 +142,7 @@ int main(int argc, char *argv[]) {
         /* Outputs */
 
 		if(param_spike_trains_file())		output_spike_trains(spike_trains, output_folder);
+		if(param_firing_rate_file())		output_firing_rate(g, spike_trains, output_folder);
 		if(param_spike_average_file()) 		output_spike_average(spike_trains, output_folder);
 		if(param_spike_variance_file()) 	output_spike_variance(spike_trains, output_folder);
 		if(param_adjacency_0_1_file())		output_adjacency_0_1(g, output_folder);

@@ -26,6 +26,7 @@ double param_intra_exchitatory_portion();
 double param_inter_exchitatory_portion();
 int param_should_be_strongly_connected();
 int param_spike_trains_file();
+int param_firing_rate_file();
 int param_adjacency_0_1_file();
 int param_adjacency_weights_file();
 int param_pearson_file();

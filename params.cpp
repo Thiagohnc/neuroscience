@@ -122,6 +122,10 @@ int param_spike_trains_file() {
 	return (int) stoi(get_param("spike_trains_file"));
 }
 
+int param_firing_rate_file() {
+	return (int) stoi(get_param("firing_rate_file"));
+}
+
 int param_adjacency_0_1_file() {
 	return (int) stoi(get_param("adjacency_0_1_file"));
 }

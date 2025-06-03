@@ -69,7 +69,7 @@ Graph sc_stochastic_block_model(vector<vector<int> > &groups, vector<vector<doub
         Graph g = stochastic_block_model(groups, p);
         if(strongly_connected(g))
             return g;
-        PRINTLN("Generated graph was not strongly connected");
+        PRINTLN(i << " Generated graph was not strongly connected");
     }
     throw runtime_error("could not generate a strongly connected graph");
 } 

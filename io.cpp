@@ -56,6 +56,32 @@ void output_spike_trains(const vector<vector<bool>> &spike_trains, const string 
     io.finish();
 }
 
+void output_firing_rate(const Graph &g, const vector<vector<bool>> &spike_trains, const string &output_folder) {
+    int N = (int) spike_trains.size();
+    int BURN_T = param_BURN_T(), T = param_T();
+    GenericIO io("firing_rate", output_folder);
+    Graph rev = g.reversed_graph();
+    double mu = param_mu();
+
+    for(int u = 0; u < N; u++) {
+        for(int t = 0; t < T + BURN_T; t++) {
+            double firing_rate = mu;
+            for(int tt = max(0, t - 1); tt < t; tt++) {
+                if(tt >= 0) {
+                    for(int k = 0; k < rev.neighbor_quantity(u); k++) {
+                        int v = rev.kth_neighbor(u, k);
+                        double w = rev.kth_weight(u, k);
+                        firing_rate += (w * spike_trains[v][tt%(T+1)])/(double)N;
+                    }
+                }
+            }
+            io << min(1.,max(0.,firing_rate)) << " ";
+        }
+        io.next(u, N);
+    }
+    io.finish();
+}
+
 void output_spike_average(const vector<vector<bool>> &spike_trains, const string &output_folder) {
     int N = (int) spike_trains.size();
     int BURN_T = param_BURN_T(), T = param_T();
