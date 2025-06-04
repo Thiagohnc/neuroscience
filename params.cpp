@@ -63,18 +63,32 @@ vvdouble param_p() {
     vint group_n = param_group_n();
     if(p.size() != group_n.size()) {
         throw invalid_argument("Parameter 'p' dimension (" + to_string(p.size()) + ") is different "
-                               "than the number of groups in 'group_n' (" + to_string(group_n.size()) + ")");
+                               "from the number of groups in 'group_n' (" + to_string(group_n.size()) + ")");
     }
 
     return p;
 }
 
-double param_mu_in() {
-    return stod(get_param("mu_in"));
-}
+vvdouble param_mu() {
+    string str_param = get_param("mu");
+    string format_msg = "parameter 'mu' must be a square matrix in the format: [row1 ; row2], "
+                        "where rows use semicolons and values use commas. Example: [3 , 0.5 ; 0.5 , 3]";
+    if(str_param.front() != '[' or str_param.back() != ']')
+        throw invalid_argument("Notation lacks brackets: " + format_msg);
+    vvdouble mu = str_to_matrix<double>(str_param.substr(1, str_param.size() - 2), ',', ';');
 
-double param_mu_out() {
-    return stod(get_param("mu_out"));
+    for(int i = 0; i < (int)mu.size(); i++) {
+        if(mu[i].size() != mu.size())
+            throw invalid_argument("Matriz is not square: " + format_msg);
+    }
+
+    vint group_n = param_group_n();
+    if(mu.size() != group_n.size()) {
+        throw invalid_argument("Parameter 'mu' dimension (" + to_string(mu.size()) + ") is different "
+                               "from the number of groups in 'group_n' (" + to_string(group_n.size()) + ")");
+    }
+
+    return mu;
 }
 
 double param_lambda() {

@@ -13,8 +13,7 @@ delay=<how much a time series is shifted to compare with other (integer)>
 # Parameters for random graphs (probabilities should be between 0.0 and 1.0)
 group_n=<list of number of nodes in each community, e.g. [150,150]>
 p=<edge probability matrix; p[i][j] = prob. of edge from group i to j; e.g. [0.3, 0.1 ; 0.1, 0.3]>
-mu_in=<absolute weight of edges inside communities>
-mu_out=<absolute weight of edges between different communities>
+mu=<edges weights matrix; mu[i][j] = absolute weight value of edge from group i to j; e.g. [3, 0.5 ; 0.5, 3]>
 lambda=<auto activation probability>
 intra_exchitatory_portion=<probability of edge inside communities being exchitatory>
 inter_exchitatory_portion=<probability of edge between different communities being exchitatory>

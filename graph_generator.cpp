@@ -14,17 +14,17 @@
 
 using namespace std;
 
-Graph stochastic_block_model(vvint &groups, vvdouble &p) {
+Graph stochastic_block_model(vvint &groups) {
     default_random_engine generator(param_seed());
     double intra_exc_portion = param_intra_exchitatory_portion();
     double inter_exc_portion = param_inter_exchitatory_portion();
-    
+    vvdouble p               = param_p();
+    vvdouble mu              = param_mu();
     int N = 0;
-    
+
     assert(groups.size() == p.size());
     for(int g = 0; g < (int)p.size(); g++)
         assert(groups.size() == p[g].size());
-    
     
     for(int g = 0; g < (int)groups.size(); g++)
         N += groups[g].size();
@@ -32,23 +32,22 @@ Graph stochastic_block_model(vvint &groups, vvdouble &p) {
     Graph g = Graph(N);
     for(int g_orig = 0; g_orig < (int)groups.size(); g_orig++) {
         for(int g_dest = 0; g_dest < (int)groups.size(); g_dest++) {
-            double prob = p[g_orig][g_dest];
+            const double prob = p[g_orig][g_dest];
+            const double base_weight = mu[g_orig][g_dest];
             
             for(int i = 0; i < (int)groups[g_orig].size(); i++) {
                 for(int j = 0; j < (int)groups[g_dest].size(); j++) {
                     int o = groups[g_orig][i];
                     int d = groups[g_dest][j];
-                    double weight;
+                    double weight = base_weight;
                     
                     if(o == d) continue;
                     
                     if(g_orig == g_dest) {
-                        weight = param_mu_in();
                         if(coin_flip(1 - intra_exc_portion))
                             weight *= -1;
                     }
                     else {
-                        weight = param_mu_out();
                         if(coin_flip(1 - inter_exc_portion))
                             weight *= -1;
                     }
@@ -64,9 +63,9 @@ Graph stochastic_block_model(vvint &groups, vvdouble &p) {
     return g;
 }
 
-Graph sc_stochastic_block_model(vvint &groups, vvdouble &p, int max_tries) {
+Graph sc_stochastic_block_model(vvint &groups, int max_tries) {
     for(int i = 0; i < max_tries; i++) {
-        Graph g = stochastic_block_model(groups, p);
+        Graph g = stochastic_block_model(groups);
         if(strongly_connected(g))
             return g;
         PRINTLN(i << " Generated graph was not strongly connected");

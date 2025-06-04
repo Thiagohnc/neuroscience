@@ -61,12 +61,10 @@ int main(int argc, char *argv[]) {
 				for(int k = 0; k < group_n[i]; k++)
 					groups[i].push_back(u++);
 
-			vvdouble p = param_p();
-
 			if(param_should_be_strongly_connected())
-				g = sc_stochastic_block_model(groups, p, 1000000);
+				g = sc_stochastic_block_model(groups, 1000000);
 			else
-				g = stochastic_block_model(groups, p);
+				g = stochastic_block_model(groups);
 		}
 		else {
 			g = graph_from_file(param_graph());
