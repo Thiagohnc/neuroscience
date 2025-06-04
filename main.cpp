@@ -55,19 +55,14 @@ int main(int argc, char *argv[]) {
 			vvint groups;
 			vint group_n = param_group_n();
 			groups.resize(group_n.size());
-			
-			if(group_n.size() != 2)
-				throw invalid_argument("Cannot use more or less than 2 groups");
 
 			int u = 0;
 			for(int i = 0; i < (int) groups.size(); i++)
 				for(int k = 0; k < group_n[i]; k++)
 					groups[i].push_back(u++);
 
-			vvdouble p;
-			p.push_back(vdouble({param_p(), param_q()}));
-			p.push_back(vdouble({param_q(), param_p()}));
-			
+			vvdouble p = param_p();
+
 			if(param_should_be_strongly_connected())
 				g = sc_stochastic_block_model(groups, p, 1000000);
 			else
@@ -171,7 +166,7 @@ int main(int argc, char *argv[]) {
 		
 		string cmd = "python3 analysis/spectral_clustering.py";
 		cmd += " input_folder=" + output_folder;
-		cmd += " n_clusters=2";
+		cmd += " n_clusters=" + to_string(param_group_n().size());
 		cmd += " seed=" + to_string(samples_seeds[sample]);
 		progress_bar(0, 2, "Spectral Clustering");
 		exec_shell(cmd + " pot=1" + " filename=spectral_clustering_1");

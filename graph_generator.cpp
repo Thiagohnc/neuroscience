@@ -83,7 +83,7 @@ Graph graph_from_file(string filepath) {
         while(getline(file, line)) {
             line = strip(line);
             if(line.size() == 0 || line[0] == '#') continue;
-            adj_matrix.push_back(vector_to_doubles(split(line, ' ')));
+            adj_matrix.push_back(str_to_vec<double>(line, ' '));
             u++;
         }
     }

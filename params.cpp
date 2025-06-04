@@ -47,12 +47,26 @@ string param_graph() {
     return get_param("graph");
 }
 
-double param_p() {
-    return stod(get_param("p"));
-}
+vvdouble param_p() {
+    string str_param = get_param("p");
+    string format_msg = "parameter 'p' must be a square matrix in the format: [row1 ; row2], "
+                        "where rows use semicolons and values use commas. Example: [0.5, 0.1 ; 0.1, 0.5]";
+    if(str_param.front() != '[' or str_param.back() != ']')
+        throw invalid_argument("Notation lacks brackets: " + format_msg);
+    vvdouble p = str_to_matrix<double>(str_param.substr(1, str_param.size() - 2), ',', ';');
 
-double param_q() {
-    return stod(get_param("q"));
+    for(int i = 0; i < (int)p.size(); i++) {
+        if(p[i].size() != p.size())
+            throw invalid_argument("Matriz is not square: " + format_msg);
+    }
+
+    vint group_n = param_group_n();
+    if(p.size() != group_n.size()) {
+        throw invalid_argument("Parameter 'p' dimension (" + to_string(p.size()) + ") is different "
+                               "than the number of groups in 'group_n' (" + to_string(group_n.size()) + ")");
+    }
+
+    return p;
 }
 
 double param_mu() {
@@ -69,9 +83,10 @@ double param_mu_out() {
 
 vint param_group_n() {
     string str_param = get_param("group_n");
-    if(str_param.front() != '[' and str_param.back() != ']')
-        throw invalid_argument("Param group_n should be given as list, e.g. [150,150] for  groups of 150 nodes");
-    return vector_to_ints(split(str_param.substr(1, str_param.size() - 2), ','));
+    if(str_param.front() != '[' or str_param.back() != ']')
+        throw invalid_argument("Invalid format for 'group_n'. Expected a list of integers, e.g. "
+                               "[150, 150] for two groups of 150 nodes.");
+    return str_to_vec<int>(str_param.substr(1, str_param.size() - 2), ',');
 }
 
 int param_T() {

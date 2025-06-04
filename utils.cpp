@@ -53,38 +53,6 @@ double mean(const vbool &v) {
 	return (double)sum/v.size();
 }
 
-vint vector_to_ints(vstring v) {
-    vint ans;
-    for(int i = 0; i < (int)v.size(); i++) {
-        ans.push_back(stoi(v[i]));
-    }
-    return ans;
-}
-
-vdouble vector_to_doubles(vstring v) {
-    vdouble ans;
-    for(int i = 0; i < (int)v.size(); i++) {
-        ans.push_back(stod(v[i]));
-    }
-    return ans;
-}
-
-vbool vector_to_bools(vstring v) {
-    vbool ans;
-    for(int i = 0; i < (int)v.size(); i++) {
-        ans.push_back(stoi(v[i]));
-    }
-    return ans;
-}
-
-vvint matrix_to_ints(vvstring v) {
-    vvint ans;
-    for(int i = 0; i < (int)v.size(); i++) {
-        ans.push_back(vector_to_ints(v[i]));
-    }
-    return ans;
-}
-
 vstring split(string str, char delim) {
     vstring ans;
     int next_char_idx = 0;
@@ -102,21 +70,6 @@ vstring split(string str, char delim) {
     return ans;
 }
 
-vvstring string_to_matrix(string str) {
-    vvstring ans;
-    int idx = 1; // Ignore first bracket
-    while(idx < (int)str.size() - 1) { // Ignore last bracket
-        if(str[idx] == '[') {
-            size_t closing_bracket = str.find("]", idx + 1);
-            auto line = split(str.substr(idx + 1, closing_bracket - idx - 1), ',');
-            ans.push_back(line);
-            idx = closing_bracket + 1;
-        }
-        else idx++;
-    }
-    return ans;
-}
-
 double logistic(double x) {
     return exp(x) / (1 + exp(x));
 }
@@ -126,7 +79,7 @@ double inverse_logistic(double y) {
     return log(y / (1 - y));
 }
 
-void progress_bar(int done, int total, string name) {
+void progress_bar(int done, int total, const string &name) {
 	if(param_silent())
 		return;
 	

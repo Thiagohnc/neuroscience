@@ -12,8 +12,7 @@ delay=<how much a time series is shifted to compare with other (integer)>
 
 # Parameters for random graphs (probabilities should be between 0.0 and 1.0)
 group_n=<list of number of nodes in each community, e.g. [150,150]>
-p=<edge probability of vertices in same community>
-q=<edge probability of vertices in different communities>
+p=<edge probability matrix; p[i][j] = prob. of edge from group i to j; e.g. [0.3, 0.1 ; 0.1, 0.3]>
 mu=<auto activation probability>
 mu_in=<absolute weight of edges inside communities>
 mu_out=<absolute weight of edges between different communities>

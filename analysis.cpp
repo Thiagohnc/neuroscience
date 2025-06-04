@@ -86,7 +86,7 @@ vvbool read_spike_trains_file(string file_path) {
 	progress_bar(0, 1, "Leitura do input (spike trains)");
     if(file.is_open()) {
         while(getline(file,line)) {
-			spikes.push_back(vector_to_bools(split(line, ' ')));
+			spikes.push_back(str_to_vec<bool>(line, ' '));
         }
     }
 	progress_bar(1, 1, "Leitura do input (spike trains)");
