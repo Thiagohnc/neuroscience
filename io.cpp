@@ -61,11 +61,11 @@ void output_firing_rate(const Graph &g, const vvbool &spike_trains, const string
     int BURN_T = param_BURN_T(), T = param_T();
     GenericIO io("firing_rate", output_folder);
     Graph rev = g.reversed_graph();
-    double mu = param_mu();
+    double lambda = param_lambda();
 
     for(int u = 0; u < N; u++) {
         for(int t = 0; t < T + BURN_T; t++) {
-            double firing_rate = mu;
+            double firing_rate = lambda;
             for(int tt = max(0, t - 1); tt < t; tt++) {
                 if(tt >= 0) {
                     for(int k = 0; k < rev.neighbor_quantity(u); k++) {

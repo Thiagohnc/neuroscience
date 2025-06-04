@@ -69,16 +69,16 @@ vvdouble param_p() {
     return p;
 }
 
-double param_mu() {
-    return stod(get_param("mu"));
-}
-
 double param_mu_in() {
     return stod(get_param("mu_in"));
 }
 
 double param_mu_out() {
     return stod(get_param("mu_out"));
+}
+
+double param_lambda() {
+    return stod(get_param("lambda"));
 }
 
 vint param_group_n() {
