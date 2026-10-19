@@ -146,10 +146,10 @@ int main(int argc, char *argv[]) {
 		if(param_interaction_matrix_file())	output_interaction_matrix(g, output_folder);
 		
 		/* Correlation or Covariance */
-		vbool temp(T+1);
+		vbool temp(T);
 		for(int u = 0; u < N; u++) {
-			for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
-			for(int t = 0; t <= T; t++) spike_trains[u][t] = temp[t];
+			for(int t = BURN_T; t < (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
+			spike_trains[u] = temp;
 			progress_bar(u + 1, N, "Formatando matriz de spike trains");
 		}
         for(int delay : delays) {

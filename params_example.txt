@@ -8,7 +8,7 @@ BURN_T=<burned time units before simulation>
 seed=<integer number or "auto" for random seed>
 output_folder=<relative path>
 samples=<number of samples>
-delay=<list of time series shifts, e.g. [0, 1, 2]; each integer must be between 0 and T>
+delay=<list of time series shifts, e.g. [0, 1, 2]; each integer must satisfy 0 <= delay < T>
 # Matrix options: correlation or covariance; both use full-train means
 # Covariance divides by the number of overlapping observations
 similarity_matrix_type=correlation

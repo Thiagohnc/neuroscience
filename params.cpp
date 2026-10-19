@@ -126,8 +126,8 @@ vint param_delay() {
     if(delays.empty())
         throw invalid_argument("Parameter 'delay' must contain at least one value.");
     for(int delay : delays)
-        if(delay < 0 || delay > param_T())
-            throw invalid_argument("Each delay must be between 0 and T.");
+        if(delay < 0 || delay >= param_T())
+            throw invalid_argument("Each delay must be nonnegative and less than T.");
     return delays;
 }
 
