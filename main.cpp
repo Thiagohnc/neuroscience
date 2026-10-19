@@ -29,6 +29,8 @@ int main(int argc, char *argv[]) {
 	const int T = param_T();
     const int BURN_T = param_BURN_T();
     const vint delays = param_delay();
+    const string similarity_matrix_type = param_similarity_matrix_type();
+    const string matrix_prefix = similarity_matrix_type == "correlation" ? "correlation_" : "covariance_";
 	double lambda = param_lambda();
 	string path;
     
@@ -143,7 +145,7 @@ int main(int argc, char *argv[]) {
 		if(param_adjacency_weights_file())	output_adjacency_weights(g, output_folder);
 		if(param_interaction_matrix_file())	output_interaction_matrix(g, output_folder);
 		
-		/* Pearson Correlation */
+		/* Correlation or Covariance */
 		vbool temp(T+1);
 		for(int u = 0; u < N; u++) {
 			for(int t = BURN_T; t <= (T + BURN_T); t++) temp[t-BURN_T] = spike_trains[u][t%(T+1)];
@@ -151,8 +153,8 @@ int main(int argc, char *argv[]) {
 			progress_bar(u + 1, N, "Formatando matriz de spike trains");
 		}
         for(int delay : delays) {
-            path = output_folder + "/pearson_" + to_string(delay);
-            write_pearson_correlation(spike_trains, path, delay);
+            path = output_folder + "/" + matrix_prefix + to_string(delay);
+            write_similarity_matrix(spike_trains, path, delay, similarity_matrix_type);
         }
 	
 		/* Clearing Allocated Space */
@@ -167,22 +169,22 @@ int main(int argc, char *argv[]) {
 		/* Spectral Clustering */
 		
         for(int delay : delays) {
-            string pearson_name = "pearson_" + to_string(delay);
+            string matrix_name = matrix_prefix + to_string(delay);
             string cmd = "python3 analysis/spectral_clustering.py";
             cmd += " input_folder=" + output_folder;
-            cmd += " pearson_filename=" + pearson_name;
+            cmd += " similarity_matrix_filename=" + matrix_name;
             cmd += " n_clusters=" + to_string(param_group_n().size());
             cmd += " seed=" + to_string(samples_seeds[sample]);
-            string log_name = "Spectral Clustering (" + pearson_name + ")";
+            string log_name = "Spectral Clustering (" + matrix_name + ")";
             progress_bar(0, 1, log_name);
             exec_shell(cmd + " pot=1 filename=spectral_clustering_" + to_string(delay));
             progress_bar(1, 1, log_name);
 
-            /* Removing Pearson File if needed */
-            path = output_folder + "/" + pearson_name;
-            if(param_pearson_file() == 0)
+            /* Removing Matrix File if needed */
+            path = output_folder + "/" + matrix_name;
+            if(param_similarity_matrix_file() == 0)
                 exec_shell("rm " + path);
-            if(param_pearson_file() == 2)
+            if(param_similarity_matrix_file() == 2)
                 zip_and_remove(path);
         }
 

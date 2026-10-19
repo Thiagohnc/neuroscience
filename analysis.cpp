@@ -10,10 +10,8 @@
 
 using namespace std;
 
-vvdouble pearson_all_pairs(vvbool &spikes, int delay) {
-    if(spikes.empty() || delay < 0 || delay >= (int)spikes[0].size())
-        throw invalid_argument("Pearson delay must be nonnegative and less than the spike train length.");
-    const string output_name = "pearson_" + to_string(delay);
+vvdouble similarity_all_pairs(vvbool &spikes, int delay, const string &similarity_matrix_type) {
+    const string output_name = (similarity_matrix_type == "correlation" ? "correlation_" : "covariance_") + to_string(delay);
 	progress_bar(0, 4, "Output: " + output_name + " - Alocação de variáveis");
 	vdouble means(spikes.size());
 	progress_bar(1, 4, "Output: " + output_name + " - Alocação de variáveis");
@@ -59,7 +57,8 @@ vvdouble pearson_all_pairs(vvbool &spikes, int delay) {
 
 	for(int i = 0; i < N; i++) {
 		for(int j = 0; j < N; j++) {
-			corr[i][j] = M(i, j) / sqrt(dens[i] * delayed_dens[j]);
+			// Both options use full-train means; covariance is normalized by the overlap.
+            corr[i][j] = M(i, j) / (similarity_matrix_type == "covariance" ? overlap : sqrt(dens[i] * delayed_dens[j]));
 		}
 		progress_bar(i + 1, N, "Output: " + output_name + " - Finalização");
 	}
@@ -82,15 +81,16 @@ vvbool read_spike_trains_file(string file_path) {
 	return spikes;
 }
 
-void write_pearson_correlation(vvbool &spikes, string file_path, int delay) {
-	ofstream pearson_file(file_path);
+void write_similarity_matrix(vvbool &spikes, string file_path, int delay, const string &similarity_matrix_type) {
+    const string output_name = (similarity_matrix_type == "correlation" ? "correlation_" : "covariance_") + to_string(delay);
+	ofstream similarity_matrix_file(file_path);
 	
-	vvdouble corr = pearson_all_pairs(spikes, delay);
+	vvdouble corr = similarity_all_pairs(spikes, delay, similarity_matrix_type);
 	for(int i = 0; i < (int)corr.size(); i++) {
 		for(int j = 0; j < (int)corr.size(); j++) {
-			pearson_file << corr[i][j] << " ";
+			similarity_matrix_file << corr[i][j] << " ";
 		}
-		pearson_file << endl;
-		progress_bar(i + 1, (int)spikes.size(), "Escrita no output (pearson_" + to_string(delay) + ")");
+		similarity_matrix_file << endl;
+		progress_bar(i + 1, (int)spikes.size(), "Escrita no output (" + output_name + ")");
 	}
 }

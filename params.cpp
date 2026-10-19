@@ -111,6 +111,13 @@ int param_BURN_T() {
     return stoi(get_param("BURN_T"));
 }
 
+string param_similarity_matrix_type() {
+    string similarity_matrix_type = get_param("similarity_matrix_type");
+    if(similarity_matrix_type != "correlation" && similarity_matrix_type != "covariance")
+        throw invalid_argument("Parameter 'similarity_matrix_type' must be correlation or covariance.");
+    return similarity_matrix_type;
+}
+
 vint param_delay() {
     string str_param = get_param("delay");
     if(str_param.size() < 2 || str_param.front() != '[' or str_param.back() != ']')
@@ -176,8 +183,8 @@ int param_interaction_matrix_file() {
 	return (int) stoi(get_param("interaction_matrix_file"));
 }
 
-int param_pearson_file() {
-	return (int) stoi(get_param("pearson_file"));
+int param_similarity_matrix_file() {
+	return (int) stoi(get_param("similarity_matrix_file"));
 }
 
 int param_spike_average_file() {
