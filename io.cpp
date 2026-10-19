@@ -148,3 +148,22 @@ void output_adjacency_weights(const Graph &g, const string &output_folder) {
     }
     io.finish();
 }
+
+void output_interaction_matrix(const Graph &g, const string &output_folder) {
+    int N = g.N();
+    GenericIO io("interaction_matrix", output_folder);
+    for(int u = 0; u < N; u++) {
+        for(int v = 0; v < N; v++) {
+            int connection = -1;
+            for(int k = 0; k < g.neighbor_quantity(u); k++) {
+                if(g.kth_neighbor(u,k) == v) {
+                    connection = k;
+                    break;
+                }
+            }
+            io << (connection == -1 ? 0 : g.kth_weight(u,connection)/(double)N) << " ";
+        }
+        io.next(u, N);
+    }
+    io.finish();
+}

@@ -27,7 +27,8 @@ spike_trains_file=
 spike_average_file=
 spike_variance_file=
 adjacency_0_1_file=
-adjacency_weights_file=0
+adjacency_weights_file=
+interaction_matrix_file=
 pearson_file=
 
 # Options

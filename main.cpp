@@ -140,6 +140,7 @@ int main(int argc, char *argv[]) {
 		if(param_spike_variance_file()) 	output_spike_variance(spike_trains, output_folder);
 		if(param_adjacency_0_1_file())		output_adjacency_0_1(g, output_folder);
 		if(param_adjacency_weights_file())	output_adjacency_weights(g, output_folder);
+		if(param_interaction_matrix_file())	output_interaction_matrix(g, output_folder);
 		
 		/* Pearson Correlation */
 		path = output_folder + "/pearson";
