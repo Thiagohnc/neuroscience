@@ -14,7 +14,7 @@ double param_lambda();
 vint param_group_n();
 int param_T();
 int param_BURN_T();
-int param_delay();
+vint param_delay();
 double param_w_intra_mean();
 double param_w_intra_std();
 double param_w_inter_mean();

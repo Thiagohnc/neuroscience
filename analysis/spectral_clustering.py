@@ -16,7 +16,7 @@ for o in obligatory_args:
     if o not in args.keys():
         raise Exception(o + ' must be an argument')
 
-sim = read_pearson(args['input_folder'])
+sim = read_pearson(args['input_folder'], args.get('pearson_filename', 'pearson'))
 
 for i in range(len(sim)):
     for j in range(i + 1):

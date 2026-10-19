@@ -12,9 +12,11 @@ def read_input(filename, var_type, input_folder, tmax=None):
     return input_data
 
 
-def read_params(input_folder):
+def read_params(path, fullpath=False):
     _params = dict()
-    with open(f'{input_folder}/params', 'r') as file:
+    if not fullpath:
+        path = f'{path}/params'
+    with open(path, 'r') as file:
         lines = file.readlines()
         for line in lines:
             line = line.strip()
@@ -24,10 +26,36 @@ def read_params(input_folder):
             _params[line[0]] = line[1]
     return _params
 
+def read_spike_average(path, fullpath=False):
+    avg = []
+    if not fullpath:
+        path = f'{path}/spike_average'
+    with open(path, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip()
+            if line == '':
+                continue
+            avg.append(float(line))
+    return avg
 
-def read_pearson(input_folder):
+def read_adj_w(path, fullpath=False):
+    adj = []
+    if not fullpath:
+        path = f'{path}/adjacency_weights'
+    with open(path, 'r') as file:
+        lines = file.readlines()
+        for line in lines:
+            line = line.strip()
+            if line == '':
+                continue
+            adj.append([float(a) for a in line.split(' ')])
+    return adj
+
+
+def read_pearson(input_folder, filename="pearson"):
     D = []
-    with open(f'{input_folder}/pearson') as file:
+    with open(f'{input_folder}/{filename}') as file:
         lines = file.readlines()
         for line in lines:
             line = line.strip().split(' ')

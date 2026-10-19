@@ -8,7 +8,7 @@ BURN_T=<burned time units before simulation>
 seed=<integer number or "auto" for random seed>
 output_folder=<relative path>
 samples=<number of samples>
-delay=<how much a time series is shifted to compare with other (integer)>
+delay=<list of time series shifts, e.g. [0, 1, 2]; each integer must be between 0 and T>
 
 # Parameters for random graphs (probabilities should be between 0.0 and 1.0)
 group_n=<list of number of nodes in each community, e.g. [150,150]>

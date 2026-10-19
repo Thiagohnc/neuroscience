@@ -4,6 +4,6 @@
 using namespace std;
 
 double pearson(int a, int b, vvbool &spikes, vdouble &means, vdouble &dens, vdouble &delayed_dens);
-vvdouble pearson_all_pairs(vvbool &spikes);
+vvdouble pearson_all_pairs(vvbool &spikes, int delay);
 vvbool read_spike_trains_file(string file_path);
-void write_pearson_correlation(vvbool &spikes, string file_path);
+void write_pearson_correlation(vvbool &spikes, string file_path, int delay);

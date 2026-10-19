@@ -111,8 +111,17 @@ int param_BURN_T() {
     return stoi(get_param("BURN_T"));
 }
 
-int param_delay() {
-    return stoi(get_param("delay"));
+vint param_delay() {
+    string str_param = get_param("delay");
+    if(str_param.size() < 2 || str_param.front() != '[' or str_param.back() != ']')
+        throw invalid_argument("Invalid format for 'delay'. Expected a list of integers, e.g. [0, 1, 2].");
+    vint delays = str_to_vec<int>(str_param.substr(1, str_param.size() - 2), ',');
+    if(delays.empty())
+        throw invalid_argument("Parameter 'delay' must contain at least one value.");
+    for(int delay : delays)
+        if(delay < 0 || delay > param_T())
+            throw invalid_argument("Each delay must be between 0 and T.");
+    return delays;
 }
 
 double param_w_intra_mean() {
