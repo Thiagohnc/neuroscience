@@ -36,5 +36,7 @@ interaction_matrix_file=
 similarity_matrix_file=
 
 # Options
+# Cluster absolute, symmetrized interaction strengths (0 = disabled, 1 = enabled)
+interaction_clustering=0
 silent=<0 is default, 1 to avoid printing on stdout>
 zip_results=<0 is default, 1 to compress entire output folder after running>

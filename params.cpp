@@ -179,6 +179,13 @@ int param_adjacency_weights_file() {
 	return (int) stoi(get_param("adjacency_weights_file"));
 }
 
+int param_interaction_clustering() {
+    int enabled = stoi(get_param("interaction_clustering"));
+    if(enabled != 0 && enabled != 1)
+        throw invalid_argument("Parameter 'interaction_clustering' must be 0 or 1.");
+    return enabled;
+}
+
 int param_interaction_matrix_file() {
 	return (int) stoi(get_param("interaction_matrix_file"));
 }

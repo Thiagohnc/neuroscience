@@ -32,6 +32,7 @@ int main(int argc, char *argv[]) {
     const int BURN_T = param_BURN_T();
     const vint delays = param_delay();
     const string similarity_matrix_type = param_similarity_matrix_type();
+    const bool interaction_clustering = param_interaction_clustering();
     const string matrix_prefix = similarity_matrix_type == "correlation" ? "correlation_" : "covariance_";
 	double lambda = param_lambda();
 	string path;
@@ -145,7 +146,8 @@ int main(int argc, char *argv[]) {
 		if(param_spike_variance_file()) 	output_spike_variance(spike_trains, output_folder);
 		if(param_adjacency_0_1_file())		output_adjacency_0_1(g, output_folder);
 		if(param_adjacency_weights_file())	output_adjacency_weights(g, output_folder);
-		if(param_interaction_matrix_file())	output_interaction_matrix(g, output_folder);
+		if(param_interaction_matrix_file() || interaction_clustering)
+            output_interaction_matrix(g, output_folder, !interaction_clustering);
 		
 		/* Correlation or Covariance */
 		vbool temp(T);
@@ -170,20 +172,27 @@ int main(int argc, char *argv[]) {
 		
 		/* Spectral Clustering */
 		
+        string clustering_cmd = "python3 analysis/spectral_clustering.py";
+        clustering_cmd += " input_folder=" + output_folder;
+        clustering_cmd += " n_clusters=" + to_string(param_group_n().size());
+        clustering_cmd += " seed=" + to_string(samples_seeds[sample]);
         const int total_delays = (int)delays.size();
         int completed_delays = 0;
         progress_bar(0, total_delays, "Spectral Clustering");
         for(int delay : delays) {
             string matrix_name = matrix_prefix + to_string(delay);
-            string cmd = "python3 analysis/spectral_clustering.py";
-            cmd += " input_folder=" + output_folder;
-            cmd += " similarity_matrix_filename=" + matrix_name;
-            cmd += " n_clusters=" + to_string(param_group_n().size());
-            cmd += " seed=" + to_string(samples_seeds[sample]);
+            string cmd = clustering_cmd + " similarity_matrix_filename=" + matrix_name;
             if(!exec_shell(cmd + " pot=1 filename=spectral_clustering_" + to_string(delay)))
                 throw runtime_error("Spectral clustering failed for " + matrix_name);
             progress_bar(++completed_delays, total_delays, "Spectral Clustering");
 
+        }
+
+        if(interaction_clustering) {
+            progress_bar(0, 1, "Spectral Clustering (interaction_matrix)");
+            if(!exec_shell(clustering_cmd + " similarity_matrix_filename=interaction_matrix pot=1 filename=spectral_clustering_interaction"))
+                throw runtime_error("Spectral clustering failed for interaction_matrix");
+            progress_bar(1, 1, "Spectral Clustering (interaction_matrix)");
         }
 
         /* Removing Matrix Files only after all clustering calls succeed */
@@ -192,6 +201,14 @@ int main(int argc, char *argv[]) {
             if(param_similarity_matrix_file() == 0 && std::remove(path.c_str()) != 0)
                 throw runtime_error("Unable to remove similarity matrix: " + path);
             if(param_similarity_matrix_file() == 2)
+                zip_and_remove(path);
+        }
+
+        if(interaction_clustering) {
+            path = output_folder + "/interaction_matrix";
+            if(param_interaction_matrix_file() == 0 && std::remove(path.c_str()) != 0)
+                throw runtime_error("Unable to remove interaction matrix: " + path);
+            if(param_interaction_matrix_file() == 2)
                 zip_and_remove(path);
         }
 

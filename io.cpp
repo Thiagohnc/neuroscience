@@ -36,9 +36,9 @@ namespace {
             progress_bar(current + 1, total, "Output: " + filename);
         }
 
-        void finish() {
+        void finish(bool compress = true) {
             filestream.close();
-            if(stoi(get_param(filename + "_file")) == 2)
+            if(compress && stoi(get_param(filename + "_file")) == 2)
                 zip_and_remove(filepath);
         }
     };
@@ -149,7 +149,7 @@ void output_adjacency_weights(const Graph &g, const string &output_folder) {
     io.finish();
 }
 
-void output_interaction_matrix(const Graph &g, const string &output_folder) {
+void output_interaction_matrix(const Graph &g, const string &output_folder, bool compress) {
     int N = g.N();
     GenericIO io("interaction_matrix", output_folder);
     for(int u = 0; u < N; u++) {
@@ -165,5 +165,5 @@ void output_interaction_matrix(const Graph &g, const string &output_folder) {
         }
         io.next(u, N);
     }
-    io.finish();
+    io.finish(compress);
 }

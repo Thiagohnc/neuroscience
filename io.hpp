@@ -14,6 +14,6 @@ void output_spike_average(const vvbool &spike_trains, const string &output_folde
 void output_spike_variance(const vvbool &spike_trains, const string &output_folder);
 void output_adjacency_0_1(const Graph &g, const string &output_folder);
 void output_adjacency_weights(const Graph &g, const string &output_folder);
-void output_interaction_matrix(const Graph &g, const string &output_folder);
+void output_interaction_matrix(const Graph &g, const string &output_folder, bool compress = true);
 
 #endif

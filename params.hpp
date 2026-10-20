@@ -29,6 +29,7 @@ int param_firing_rate_file();
 int param_adjacency_0_1_file();
 int param_adjacency_weights_file();
 int param_interaction_matrix_file();
+int param_interaction_clustering();
 int param_similarity_matrix_file();
 int param_spike_average_file();
 int param_spike_variance_file();
