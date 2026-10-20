@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <string>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -137,18 +138,28 @@ void mkdir_tree(string folder) {
     mkdir(folder.data(), 0777);
 }
 
-void zip_and_remove(string path) {
-	progress_bar(0, 1, "Compactando Arquivo");
-	exec_shell("tar -czf " + path + ".tar.gz " + path);
-	exec_shell("rm " + path);
-	progress_bar(1, 1, "Compactando Arquivo");
+void zip_and_remove(string path, bool directory) {
+    auto quote = [](const string &value) {
+        string quoted = "'";
+        for(char c : value)
+            quoted += c == '\'' ? "'\\''" : string(1, c);
+        return quoted + "'";
+    };
+    progress_bar(0, 1, "Compactando Arquivo");
+    if(!exec_shell("tar -czf " + quote(path + ".tar.gz") + " -- " + quote(path)))
+        throw runtime_error("Compression failed; source preserved: " + path);
+    if(!exec_shell(string(directory ? "rm -r -- " : "rm -- ") + quote(path)))
+        throw runtime_error("Unable to remove compressed source: " + path);
+    progress_bar(1, 1, "Compactando Arquivo");
 }
 
-void exec_shell(string cmd) {
-	int status = system(cmd.c_str());
-	if(WEXITSTATUS(status) != 0) {
-		cerr << "Command " << cmd << " returned " << WEXITSTATUS(status) << endl;
-	}
+bool exec_shell(string cmd) {
+    int status = system(cmd.c_str());
+    if(status == -1 || !WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+        cerr << "Command failed: " << cmd << " (status " << status << ")" << endl;
+        return false;
+    }
+    return true;
 }
 
 void set_seed(long unsigned int seed) {

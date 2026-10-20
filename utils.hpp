@@ -26,8 +26,8 @@ double inverse_logistic(double y);
 void progress_bar(int done, int total, const std::string &name);
 std::string strip(std::string);
 void mkdir_tree(std::string folder);
-void zip_and_remove(std::string path);
-void exec_shell(std::string cmd);
+void zip_and_remove(std::string path, bool directory = false);
+bool exec_shell(std::string cmd);
 void set_seed(long unsigned int seed);
 
 template<typename T>

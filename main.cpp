@@ -195,8 +195,7 @@ int main(int argc, char *argv[]) {
 	
 	/* Zip folder and remove */
 	if(param_zip_results()) {
-		exec_shell("tar -czf " + param_output_folder() + ".tar.gz " + param_output_folder());
-		exec_shell("rm -r " + param_output_folder());
+		zip_and_remove(param_output_folder(), true);
 	}
 
     return 0;
