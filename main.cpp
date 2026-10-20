@@ -170,6 +170,9 @@ int main(int argc, char *argv[]) {
 		
 		/* Spectral Clustering */
 		
+        const int total_delays = (int)delays.size();
+        int completed_delays = 0;
+        progress_bar(0, total_delays, "Spectral Clustering");
         for(int delay : delays) {
             string matrix_name = matrix_prefix + to_string(delay);
             string cmd = "python3 analysis/spectral_clustering.py";
@@ -177,11 +180,9 @@ int main(int argc, char *argv[]) {
             cmd += " similarity_matrix_filename=" + matrix_name;
             cmd += " n_clusters=" + to_string(param_group_n().size());
             cmd += " seed=" + to_string(samples_seeds[sample]);
-            string log_name = "Spectral Clustering (" + matrix_name + ")";
-            progress_bar(0, 1, log_name);
             if(!exec_shell(cmd + " pot=1 filename=spectral_clustering_" + to_string(delay)))
                 throw runtime_error("Spectral clustering failed for " + matrix_name);
-            progress_bar(1, 1, log_name);
+            progress_bar(++completed_delays, total_delays, "Spectral Clustering");
 
         }
 
