@@ -6,10 +6,12 @@
 #include "types.hpp"
 #include "utils.hpp"
 #include <climits>
+#include <cstdio>
 #include <fstream>
 #include <iostream>
 #include <regex>
 #include <sstream>
+#include <stdexcept>
 
 using namespace std;
 	
@@ -177,13 +179,17 @@ int main(int argc, char *argv[]) {
             cmd += " seed=" + to_string(samples_seeds[sample]);
             string log_name = "Spectral Clustering (" + matrix_name + ")";
             progress_bar(0, 1, log_name);
-            exec_shell(cmd + " pot=1 filename=spectral_clustering_" + to_string(delay));
+            if(!exec_shell(cmd + " pot=1 filename=spectral_clustering_" + to_string(delay)))
+                throw runtime_error("Spectral clustering failed for " + matrix_name);
             progress_bar(1, 1, log_name);
 
-            /* Removing Matrix File if needed */
-            path = output_folder + "/" + matrix_name;
-            if(param_similarity_matrix_file() == 0)
-                exec_shell("rm " + path);
+        }
+
+        /* Removing Matrix Files only after all clustering calls succeed */
+        for(int delay : delays) {
+            path = output_folder + "/" + matrix_prefix + to_string(delay);
+            if(param_similarity_matrix_file() == 0 && std::remove(path.c_str()) != 0)
+                throw runtime_error("Unable to remove similarity matrix: " + path);
             if(param_similarity_matrix_file() == 2)
                 zip_and_remove(path);
         }
